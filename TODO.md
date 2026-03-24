@@ -59,10 +59,11 @@ sequentially in compilation order — calling `ParseAndCheckFileInProject`
 for file N triggers checking of files 1..N. Parallel calls would
 redundantly check earlier files.
 
-Across projects: could parallelize projects at the same topo-sort level,
-but `getProjectOptions` serializes via `msbuildLock` in ProjectLoader.fs.
-Would need benchmarking on a large real solution to determine if the FCS
-analysis portion (after MSBuild) benefits from cross-project parallelism.
+Across projects: viable. FSharpChecker is thread-safe for concurrent
+calls with different project options. `getProjectOptions` still serializes
+via `msbuildLock` (MSBuild uses process-global state), but FCS analysis
+after options are loaded can run in parallel. Would need the topo sort
+to return levels for parallel dispatch.
 
 #### Cross-project dependency tracking
 When project A changes, projects referencing A may have stale deps. FSAC
@@ -74,10 +75,11 @@ daemon mode, would need addressing.
 ### Exploratory
 
 #### Transparent Compiler / Snapshot API
-Types exist in FCS 43.12.201 (`FSharpProjectSnapshot`, `FSharpFileSnapshot`)
-but `ParseAndCheckFileInProject` does not accept snapshots — only
-`InvalidateConfiguration` and `GetBackgroundSemanticClassificationForFile` do.
-Blocked until a future FCS release exposes snapshot-based type checking.
+Available in FCS 43.12.201 — `ParseAndCheckFileInProject` has a snapshot
+overload accepting `FSharpProjectSnapshot` instead of `FSharpProjectOptions`.
+Each `FSharpFileSnapshot` has a version string; FCS skips re-checking files
+with unchanged versions internally. Would replace our application-layer
+file-level caching with FCS-native caching.
 
 #### Parse-only for definition extraction
 `ParseFile` is much faster than `ParseAndCheckFileInProject`. Returns full
