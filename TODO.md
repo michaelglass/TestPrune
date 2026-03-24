@@ -1,9 +1,9 @@
 # TestPrune — Remaining TODOs
 
 ## Should do
-- [ ] Unit tests for FalcoRouteExtension (only integration-tested via build pipeline)
-- [ ] SymbolDiff: content hashing instead of line-range comparison (comment shifts cause false positives for functions below)
-- [ ] `selectAffectedTests` graceful fallback when `getScriptOptions` produces bad results
+- [x] Unit tests for FalcoRouteExtension (multi-class, multi-handler scenarios)
+- [x] SymbolDiff: content hashing instead of line-range comparison
+- [x] `selectAffectedTests` graceful fallback — logs warning and triggers RunAll on parse failure
 
 ## Performance — Learnings from Ionide/FSAC Research
 
@@ -12,6 +12,7 @@
 - [x] File-level caching — skip FCS analysis for unchanged files, load from DB
 - [x] Lazy getOptions — defer MSBuild until a file actually needs analysis
 - [x] projectCacheSize 25 → 200 (matches FSAC)
+- [x] FSharpChecker reuse — callers can pass a checker instance to runIndexWith
 - [x] Compilation-order re-checking — files after a changed file are re-analyzed
 - [x] Cross-project dependency invalidation — re-index projects whose deps were re-indexed
 - [x] Topological project sort — process dependencies before dependents
