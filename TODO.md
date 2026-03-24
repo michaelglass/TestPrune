@@ -53,14 +53,16 @@ FSAC settings: `projectCacheSize = 200` (we use 25),
 
 ### Medium Impact
 
-#### Parallel file analysis within a project
-FSAC uses `Async.parallel75` (75% of cores). Our file loop is sequential.
-Would help for cold-start indexing only (incremental runs are already fast).
+#### Parallel analysis
+Within a project: not viable. FCS IncrementalBuilder processes files
+sequentially in compilation order — calling `ParseAndCheckFileInProject`
+for file N triggers checking of files 1..N. Parallel calls would
+redundantly check earlier files.
 
-Caveat: FCS IncrementalBuilder benefits from sequential compilation-order
-processing. Parallel processing may cause redundant environment building.
-Also conflicts with compilation-order invalidation logic (need to know if
-earlier files changed before deciding on later ones). Needs benchmarking.
+Across projects: could parallelize projects at the same topo-sort level,
+but `getProjectOptions` serializes via `msbuildLock` in ProjectLoader.fs.
+Would need benchmarking on a large real solution to determine if the FCS
+analysis portion (after MSBuild) benefits from cross-project parallelism.
 
 #### Cross-project dependency tracking
 When project A changes, projects referencing A may have stale deps. FSAC
@@ -71,10 +73,11 @@ daemon mode, would need addressing.
 
 ### Exploratory
 
-#### Transparent Compiler / Snapshot API (FCS 44+)
-`FSharpProjectSnapshot` with content-addressable per-file caching. Each
-`FSharpFileSnapshot` has a version string; FCS skips unchanged files
-internally. Would require FCS upgrade from 43.12.201.
+#### Transparent Compiler / Snapshot API
+Types exist in FCS 43.12.201 (`FSharpProjectSnapshot`, `FSharpFileSnapshot`)
+but `ParseAndCheckFileInProject` does not accept snapshots — only
+`InvalidateConfiguration` and `GetBackgroundSemanticClassificationForFile` do.
+Blocked until a future FCS release exposes snapshot-based type checking.
 
 #### Parse-only for definition extraction
 `ParseFile` is much faster than `ParseAndCheckFileInProject`. Returns full
@@ -84,4 +87,5 @@ definitions, type-check only changed files for dependency resolution.
 #### enablePartialTypeChecking
 Uses `.fsi` signature files to skip implementation checking. Mutually
 exclusive with `keepAssemblyContents = true` which we need for
-`GetAllUsesOfAllSymbolsInFile`.
+`GetAllUsesOfAllSymbolsInFile`. Not viable without a different symbol
+extraction approach.
