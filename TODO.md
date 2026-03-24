@@ -11,6 +11,10 @@
 - [x] Project-level caching — skip entire project when no files changed
 - [x] File-level caching — skip FCS analysis for unchanged files, load from DB
 - [x] Lazy getOptions — defer MSBuild until a file actually needs analysis
+- [x] projectCacheSize 25 → 200 (matches FSAC)
+- [x] Compilation-order re-checking — files after a changed file are re-analyzed
+- [x] Cross-project dependency invalidation — re-index projects whose deps were re-indexed
+- [x] Topological project sort — process dependencies before dependents
 
 ### High Impact
 
@@ -50,11 +54,12 @@ FSAC settings: `projectCacheSize = 200` (we use 25),
 
 #### Parallel file analysis within a project
 FSAC uses `Async.parallel75` (75% of cores). Our file loop is sequential.
-Would help for cold-start indexing.
+Would help for cold-start indexing only (incremental runs are already fast).
 
 Caveat: FCS IncrementalBuilder benefits from sequential compilation-order
 processing. Parallel processing may cause redundant environment building.
-Benchmark before committing.
+Also conflicts with compilation-order invalidation logic (need to know if
+earlier files changed before deciding on later ones). Needs benchmarking.
 
 #### Cross-project dependency tracking
 When project A changes, projects referencing A may have stale deps. FSAC
