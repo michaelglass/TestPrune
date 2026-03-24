@@ -17,77 +17,46 @@
 - [x] Cross-project dependency invalidation — re-index projects whose deps were re-indexed
 - [x] Topological project sort — process dependencies before dependents
 
-### High Impact
+### Future — Daemon Mode
 
-#### File watcher daemon mode
-FSAC keeps an `FSharpChecker` alive and uses `FileSystemWatcher` per
-directory (via `FSharp.Data.Adaptive`). On file change, only that file
-and its dependents are re-checked.
+File watcher daemon would keep FSharpChecker alive (IncrementalBuilder
+caches persist across checks), watch for file saves, re-index
+incrementally, and serve status/run commands instantly. Requires new
+process model (long-running service vs CLI).
 
-For TestPrune, a long-running daemon could:
-- Keep FSharpChecker warm (IncrementalBuilder caches persist across checks)
-- Watch for file saves and re-index incrementally
-- Maintain a ready-to-query dependency graph at all times
-- Serve `status` and `run` commands instantly without re-parsing
+FSAC ref: `FSharp.Data.Adaptive` for file watching,
+`bypassAdaptiveAndCheckDependenciesForFile` in `AdaptiveServerState.fs`
+for incremental re-checking.
 
-#### Compilation-order-aware re-checking
-F# files compile sequentially — file N depends on 1..N-1 but not N+1..M.
-FSAC exploits this: when file K changes, only files K..M need re-checking.
+### Future — Cross-Project Parallel Analysis
 
-Currently safe to skip because the build step runs first — if a changed
-file breaks dependents, build fails before indexing. But for daemon mode
-(no build step), compilation-order awareness would be needed.
+FSharpChecker is thread-safe for concurrent calls with different project
+options (verified). Projects at the same topo-sort level could be analyzed
+in parallel. `getProjectOptions` still serializes via MSBuild lock, but
+FCS analysis after options load can overlap. Would need topo sort to
+return levels and handle concurrent DB writes (SQLite WAL supports one
+writer at a time, so writes would serialize).
 
-FSAC ref: `bypassAdaptiveAndCheckDependenciesForFile` in
-`AdaptiveServerState.fs` — `Array.splitAt idx` on source files, then
-`Async.parallel75` for files after the changed one.
+### Future — Snapshot API
 
-#### FSharpChecker reuse across runs
-New `FSharpChecker` per `index` invocation means cold caches every time.
-FCS maintains `IncrementalBuilder` per project — reusing the checker (via
-daemon) would make re-indexing near-instant because the type-checker
-environment for preceding files is already built.
+Available in FCS 43.12.201 — `ParseAndCheckFileInProject` has an overload
+accepting `FSharpProjectSnapshot` instead of `FSharpProjectOptions`.
+Each `FSharpFileSnapshot` has a version string; FCS skips re-checking
+files with unchanged versions internally. Would replace our
+application-layer file-level caching with FCS-native caching.
 
-FSAC settings: `projectCacheSize = 200` (we use 25),
-`keepAllBackgroundResolutions = true`, `keepAssemblyContents = true`.
+### Not Viable
 
-### Medium Impact
-
-#### Parallel analysis
-Within a project: not viable. FCS IncrementalBuilder processes files
-sequentially in compilation order — calling `ParseAndCheckFileInProject`
-for file N triggers checking of files 1..N. Parallel calls would
-redundantly check earlier files.
-
-Across projects: viable. FSharpChecker is thread-safe for concurrent
-calls with different project options. `getProjectOptions` still serializes
-via `msbuildLock` (MSBuild uses process-global state), but FCS analysis
-after options are loaded can run in parallel. Would need the topo sort
-to return levels for parallel dispatch.
-
-#### Cross-project dependency tracking
-When project A changes, projects referencing A may have stale deps. FSAC
-finds dependent projects transitively and re-checks their files.
-
-Currently safe because build runs first and symbol names are stable. For
-daemon mode, would need addressing.
-
-### Exploratory
-
-#### Transparent Compiler / Snapshot API
-Available in FCS 43.12.201 — `ParseAndCheckFileInProject` has a snapshot
-overload accepting `FSharpProjectSnapshot` instead of `FSharpProjectOptions`.
-Each `FSharpFileSnapshot` has a version string; FCS skips re-checking files
-with unchanged versions internally. Would replace our application-layer
-file-level caching with FCS-native caching.
-
-#### Parse-only for definition extraction
-`ParseFile` is much faster than `ParseAndCheckFileInProject`. Returns full
-AST but no resolved symbols. Two-pass approach: parse all (fast) for
-definitions, type-check only changed files for dependency resolution.
-
-#### enablePartialTypeChecking
-Uses `.fsi` signature files to skip implementation checking. Mutually
-exclusive with `keepAssemblyContents = true` which we need for
-`GetAllUsesOfAllSymbolsInFile`. Not viable without a different symbol
-extraction approach.
+- **enablePartialTypeChecking** — mutually exclusive with
+  `keepAssemblyContents = true` (throws `ArgumentException`). We need
+  `keepAssemblyContents` for `GetAllUsesOfAllSymbolsInFile` which builds
+  the dependency graph. No workaround without a different symbol
+  extraction approach.
+- **Parallel within a project** — FCS IncrementalBuilder processes files
+  sequentially in compilation order. Parallel calls for files in the same
+  project redundantly check earlier files.
+- **Parse-only for dependencies** — `ParseFile` returns the AST with
+  definition names and ranges (verified), but no resolved symbol
+  references. We need `GetAllUsesOfAllSymbolsInFile` to know which
+  functions call which. Parse-only could extract definitions but not
+  the dependency edges that are core to test impact analysis.
