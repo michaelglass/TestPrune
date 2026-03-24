@@ -37,13 +37,11 @@ FCS analysis after options load can overlap. Would need topo sort to
 return levels and handle concurrent DB writes (SQLite WAL supports one
 writer at a time, so writes would serialize).
 
-### Future — Snapshot API
-
-Available in FCS 43.12.201 — `ParseAndCheckFileInProject` has an overload
-accepting `FSharpProjectSnapshot` instead of `FSharpProjectOptions`.
-Each `FSharpFileSnapshot` has a version string; FCS skips re-checking
-files with unchanged versions internally. Would replace our
-application-layer file-level caching with FCS-native caching.
+### Done — Snapshot API
+- [x] `createProjectSnapshot` and `analyzeSourceWithSnapshot` in AstAnalyzer.fs
+- [x] CLI uses snapshot API for indexing (mtime-based file versions)
+- [x] ~23% faster cold start on example solution (7.3s vs 9.4s)
+- [x] Consumers with long-lived FSharpChecker benefit from FCS-internal caching
 
 ### Not Viable
 
