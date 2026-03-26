@@ -144,6 +144,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Clean working tree so we can switch branches
+          git clean -fd
+          git checkout -- .
+
           # Create gh-pages branch if it doesn't exist
           if git rev-parse --verify origin/gh-pages >/dev/null 2>&1; then
             git checkout gh-pages
@@ -156,8 +160,10 @@ jobs:
           if [[ "$PACKAGE" == "core" ]]; then
             # Core owns everything except Falco/ and reference/testprune-falco-*
             rsync -a --delete \
+              --exclude='.git' \
               --exclude='Falco/' \
               --exclude='reference/testprune-falco-*' \
+              --filter='protect .git' \
               --filter='protect Falco/' \
               --filter='protect reference/testprune-falco-*' \
               /tmp/docs-output/ ./
