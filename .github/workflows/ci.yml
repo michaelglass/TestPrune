@@ -136,7 +136,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: docs
-          path: docs-output
+          path: /tmp/docs-output
 
       - name: Deploy to gh-pages branch
         if: steps.check.outputs.is_prerelease == 'false' || steps.check.outputs.has_stable == 'false'
@@ -160,11 +160,12 @@ jobs:
               --exclude='reference/testprune-falco-*' \
               --filter='protect Falco/' \
               --filter='protect reference/testprune-falco-*' \
-              docs-output/ ./
+              /tmp/docs-output/ ./
           else
             # Falco owns Falco/ and reference/testprune-falco-*
-            rsync -a --delete docs-output/Falco/ ./Falco/
-            rsync -a docs-output/reference/testprune-falco-* ./reference/
+            mkdir -p Falco reference
+            rsync -a --delete /tmp/docs-output/Falco/ ./Falco/
+            rsync -a /tmp/docs-output/reference/testprune-falco-* ./reference/
           fi
 
           git add -A
