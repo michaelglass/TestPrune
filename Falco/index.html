@@ -55,6 +55,12 @@
     Coverage Push: Test the 0% Files
 
   </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-27-rebuild-projects-api.html">
+    Replace &lt;code&gt;RebuildForProject&lt;/code&gt; with &lt;code&gt;RebuildProjects&lt;/code&gt;
+
+  </a>
 </li>
                 <li class="nav-header">
   API Reference
@@ -97,6 +103,12 @@
     Coverage Push: Test the 0% Files
 
   </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-27-rebuild-projects-api.html">
+    Replace &lt;code&gt;RebuildForProject&lt;/code&gt; with &lt;code&gt;RebuildProjects&lt;/code&gt;
+
+  </a>
 </li>
         <li class="nav-header">
   API Reference
@@ -110,22 +122,63 @@
 </aside>
 <main>
     <div id="content">
-        <!-- sync:falco-intro -->
+        <!-- sync:falco-readme -->
 <h1><a name="TestPrune-Falco" class="anchor" href="#TestPrune-Falco">TestPrune.Falco</a></h1>
 <p>When you change a route handler, only re-run the integration tests that
 hit that route.</p>
 <p>This is an extension for <a href="https://github.com/michaelglass/TestPrune">TestPrune</a>
 that connects Falco URL routes to integration tests. If you change the
 handler for <code>/api/users/{id}</code>, it finds the tests that make requests to
-that URL and runs just those.
-<!-- sync:falco-intro:end --></p>
+that URL and runs just those.</p>
 <h2><a name="Installation" class="anchor" href="#Installation">Installation</a></h2>
 <table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="bash">dotnet add package TestPrune.Falco
 </code></pre></td></tr></table>
-<h2><a name="API-Reference" class="anchor" href="#API-Reference">API Reference</a></h2>
-<p>See the <a href="../reference/testprune-falco.html">API reference</a> for full type documentation.</p>
+<h2><a name="How-to-use-it" class="anchor" href="#How-to-use-it">How to use it</a></h2>
+<h3><a name="1-Store-your-route-mappings-during-indexing" class="anchor" href="#1-Store-your-route-mappings-during-indexing">1. Store your route mappings during indexing</a></h3>
+<p>Tell TestPrune which source files handle which URLs:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">db</span><span class="pn">.</span><span class="id">RebuildRouteHandlers</span> <span class="pn">[</span>
+    <span class="pn">{</span> <span class="id">UrlPattern</span> <span class="o">=</span> <span class="s">&quot;/api/users/{id}&quot;</span>
+      <span class="id">HttpMethod</span> <span class="o">=</span> <span class="s">&quot;GET&quot;</span>
+      <span class="id">HandlerSourceFile</span> <span class="o">=</span> <span class="s">&quot;src/Web/Handlers/Users.fs&quot;</span> <span class="pn">}</span>
+    <span class="pn">{</span> <span class="id">UrlPattern</span> <span class="o">=</span> <span class="s">&quot;/api/users/{id}&quot;</span>
+      <span class="id">HttpMethod</span> <span class="o">=</span> <span class="s">&quot;PUT&quot;</span>
+      <span class="id">HandlerSourceFile</span> <span class="o">=</span> <span class="s">&quot;src/Web/Handlers/Users.fs&quot;</span> <span class="pn">}</span>
+<span class="pn">]</span>
+</code></pre>
+<h3><a name="2-Create-the-extension-and-query-affected-tests" class="anchor" href="#2-Create-the-extension-and-query-affected-tests">2. Create the extension and query affected tests</a></h3>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="id">extension</span> <span class="o">=</span>
+    <span class="id">FalcoRouteExtension</span><span class="pn">(</span>
+        <span class="id">integrationTestProject</span> <span class="o">=</span> <span class="s">&quot;MyApp.IntegrationTests&quot;</span><span class="pn">,</span>
+        <span class="id">integrationTestDir</span> <span class="o">=</span> <span class="s">&quot;tests/MyApp.IntegrationTests&quot;</span>
+    <span class="pn">)</span>
 
-        
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="id">affected</span> <span class="o">=</span>
+    <span class="pn">(</span><span onmouseout="hideTip(event, 'fs1', 3)" onmouseover="showTip(event, 'fs1', 3)" class="id">extension</span> <span class="o">:&gt;</span> <span class="id">ITestPruneExtension</span><span class="pn">)</span>
+        <span class="pn">.</span><span class="id">FindAffectedTests</span> <span class="id">db</span> <span class="id">changedFiles</span> <span class="id">repoRoot</span>
+<span class="c">// -&gt; [{ TestProject = &quot;MyApp.IntegrationTests&quot;; TestClass = &quot;UsersTests&quot; }]</span>
+</code></pre>
+<h2><a name="How-it-works" class="anchor" href="#How-it-works">How it works</a></h2>
+<ol>
+<li>Checks if any changed file is a known handler (from the route table)</li>
+<li>Looks up which URL patterns that handler serves</li>
+<li>
+Scans your integration test <code>.fs</code> files for those URLs
+(<code>/api/users/{id}</code> matches <code>/api/users/123</code> in your test code)
+</li>
+<li>Returns the test classes from files that reference affected routes</li>
+</ol>
+<h2><a name="Documentation" class="anchor" href="#Documentation">Documentation</a></h2>
+<ul>
+<li><a href="https://michaelglass.github.io/TestPrune/Falco/">Full documentation</a></li>
+<li>
+<a href="https://michaelglass.github.io/TestPrune/reference/testprune-falco.html">API reference</a>
+<!-- sync:falco-readme:end -->
+</li>
+</ul>
+
+        <div class="fsdocs-tip" id="fs1">val extension: obj</div>
+<div class="fsdocs-tip" id="fs2">val affected: obj</div>
+
     </div>
 </main>
 <aside id="fsdocs-page-menu">
@@ -142,8 +195,28 @@ that URL and runs just those.
     </a>
   </li>
   <li class="level-2">
-    <a href="#API-Reference">
-      API Reference
+    <a href="#How-to-use-it">
+      How to use it
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#1-Store-your-route-mappings-during-indexing">
+      1. Store your route mappings during indexing
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#2-Create-the-extension-and-query-affected-tests">
+      2. Create the extension and query affected tests
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#How-it-works">
+      How it works
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Documentation">
+      Documentation
     </a>
   </li>
 </ul>
