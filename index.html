@@ -55,6 +55,12 @@
     Coverage Push: Test the 0% Files
 
   </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-27-rebuild-projects-api.html">
+    Replace &lt;code&gt;RebuildForProject&lt;/code&gt; with &lt;code&gt;RebuildProjects&lt;/code&gt;
+
+  </a>
 </li>
                 <li class="nav-header">
   API Reference
@@ -97,6 +103,12 @@
     Coverage Push: Test the 0% Files
 
   </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-27-rebuild-projects-api.html">
+    Replace &lt;code&gt;RebuildForProject&lt;/code&gt; with &lt;code&gt;RebuildProjects&lt;/code&gt;
+
+  </a>
 </li>
         <li class="nav-header">
   API Reference
@@ -110,18 +122,233 @@
 </aside>
 <main>
     <div id="content">
-        <!-- sync:intro -->
+        <!-- sync:readme -->
 <h1><a name="TestPrune" class="anchor" href="#TestPrune">TestPrune</a></h1>
 <p>Only run the tests affected by your change.</p>
 <p>TestPrune analyzes your F# code to figure out which functions depend on
 which, then uses that to skip tests that couldn't possibly be affected
-by what you changed.
-<!-- sync:intro:end --></p>
-<h2><a name="Installation" class="anchor" href="#Installation">Installation</a></h2>
+by what you changed.</p>
+<h2><a name="Why" class="anchor" href="#Why">Why?</a></h2>
+<p>When your test suite takes minutes but you only changed one function,
+running everything is wasteful. TestPrune builds a map of your code —
+which functions call which, which tests cover which code — and uses it
+to pick just the tests that matter.</p>
+<p>Change <code>multiply</code>? Only the multiply tests run. Change a type that
+three modules depend on? Those three modules' tests run. Add a new
+file? Everything runs, just to be safe.</p>
+<h2><a name="Quick-example" class="anchor" href="#Quick-example">Quick example</a></h2>
+<p>Say you have a math library and some tests
+(from <a href="examples/SampleSolution"><code>examples/SampleSolution</code></a>):</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// src/SampleLib/Math.fs</span>
+<span class="k">module</span> <span class="id">SampleLib</span><span class="pn">.</span><span class="id">Math</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="fn">add</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="fn">x</span> <span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="fn">y</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs2', 4)" onmouseover="showTip(event, 'fs2', 4)" class="fn">x</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 5)" onmouseover="showTip(event, 'fs3', 5)" class="fn">y</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs4', 6)" onmouseover="showTip(event, 'fs4', 6)" class="fn">multiply</span> <span onmouseout="hideTip(event, 'fs2', 7)" onmouseover="showTip(event, 'fs2', 7)" class="fn">x</span> <span onmouseout="hideTip(event, 'fs3', 8)" onmouseover="showTip(event, 'fs3', 8)" class="fn">y</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs2', 9)" onmouseover="showTip(event, 'fs2', 9)" class="fn">x</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs3', 10)" onmouseover="showTip(event, 'fs3', 10)" class="fn">y</span>
+</code></pre>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// tests/SampleLib.Tests/MathTests.fs</span>
+<span class="pn">[&lt;</span><span class="id">Fact</span><span class="pn">&gt;]</span>
+<span class="k">let</span> <span class="fn">``add returns sum``</span> <span class="pn">(</span><span class="pn">)</span> <span class="o">=</span> <span class="id">Assert</span><span class="pn">.</span><span class="id">Equal</span><span class="pn">(</span><span class="n">5</span><span class="pn">,</span> <span onmouseout="hideTip(event, 'fs1', 11)" onmouseover="showTip(event, 'fs1', 11)" class="id">add</span> <span class="n">2</span> <span class="n">3</span><span class="pn">)</span>
+
+<span class="pn">[&lt;</span><span class="id">Fact</span><span class="pn">&gt;]</span>
+<span class="k">let</span> <span class="fn">``multiply returns product``</span> <span class="pn">(</span><span class="pn">)</span> <span class="o">=</span> <span class="id">Assert</span><span class="pn">.</span><span class="id">Equal</span><span class="pn">(</span><span class="n">12</span><span class="pn">,</span> <span onmouseout="hideTip(event, 'fs4', 12)" onmouseover="showTip(event, 'fs4', 12)" class="id">multiply</span> <span class="n">3</span> <span class="n">4</span><span class="pn">)</span>
+</code></pre>
+<p>You change <code>multiply</code>. TestPrune figures out that only
+<code>multiply returns product</code> needs to run — and skips <code>add returns sum</code>.</p>
+<h2><a name="Getting-started" class="anchor" href="#Getting-started">Getting started</a></h2>
 <table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="bash">dotnet add package TestPrune.Core
 </code></pre></td></tr></table>
+<h3><a name="1-Index-your-project" class="anchor" href="#1-Index-your-project">1. Index your project</a></h3>
+<p>First, build a dependency graph of your code. This parses every <code>.fs</code>
+file and stores the results in a local SQLite database:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs5', 13)" onmouseover="showTip(event, 'fs5', 13)" class="id">checker</span> <span class="o">=</span> <span class="id">FSharpChecker</span><span class="pn">.</span><span class="id">Create</span><span class="pn">(</span><span class="pn">)</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs6', 14)" onmouseover="showTip(event, 'fs6', 14)" class="id">db</span> <span class="o">=</span> <span class="id">Database</span><span class="pn">.</span><span class="id">create</span> <span class="s">&quot;.test-prune.db&quot;</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs7', 15)" onmouseover="showTip(event, 'fs7', 15)" class="id">projOptions</span> <span class="o">=</span> <span class="id">getScriptOptions</span> <span onmouseout="hideTip(event, 'fs5', 16)" onmouseover="showTip(event, 'fs5', 16)" class="id">checker</span> <span class="id">fileName</span> <span class="id">source</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 17)" onmouseover="showTip(event, 'fs8', 17)" class="rt">Async</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs9', 18)" onmouseover="showTip(event, 'fs9', 18)" class="id">RunSynchronously</span>
 
-        
+<span class="k">match</span> <span class="id">analyzeSource</span> <span onmouseout="hideTip(event, 'fs5', 19)" onmouseover="showTip(event, 'fs5', 19)" class="id">checker</span> <span class="id">fileName</span> <span class="id">source</span> <span onmouseout="hideTip(event, 'fs7', 20)" onmouseover="showTip(event, 'fs7', 20)" class="id">projOptions</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 21)" onmouseover="showTip(event, 'fs8', 21)" class="rt">Async</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs9', 22)" onmouseover="showTip(event, 'fs9', 22)" class="id">RunSynchronously</span> <span class="k">with</span>
+<span class="pn">|</span> <span onmouseout="hideTip(event, 'fs10', 23)" onmouseover="showTip(event, 'fs10', 23)" class="uc">Ok</span> <span onmouseout="hideTip(event, 'fs11', 24)" onmouseover="showTip(event, 'fs11', 24)" class="fn">result</span> <span class="k">-&gt;</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs12', 25)" onmouseover="showTip(event, 'fs12', 25)" class="fn">normalized</span> <span class="o">=</span> <span class="pn">{</span> <span onmouseout="hideTip(event, 'fs11', 26)" onmouseover="showTip(event, 'fs11', 26)" class="fn">result</span> <span class="k">with</span> <span class="id">Symbols</span> <span class="o">=</span> <span class="id">normalizeSymbolPaths</span> <span class="id">repoRoot</span> <span onmouseout="hideTip(event, 'fs11', 27)" onmouseover="showTip(event, 'fs11', 27)" class="id">result</span><span class="pn">.</span><span class="id">Symbols</span> <span class="pn">}</span>
+    <span onmouseout="hideTip(event, 'fs6', 28)" onmouseover="showTip(event, 'fs6', 28)" class="id">db</span><span class="pn">.</span><span class="id">RebuildProjects</span><span class="pn">(</span><span class="pn">[</span> <span onmouseout="hideTip(event, 'fs12', 29)" onmouseover="showTip(event, 'fs12', 29)" class="id">normalized</span> <span class="pn">]</span><span class="pn">)</span>
+<span class="pn">|</span> <span onmouseout="hideTip(event, 'fs13', 30)" onmouseover="showTip(event, 'fs13', 30)" class="uc">Error</span> <span onmouseout="hideTip(event, 'fs14', 31)" onmouseover="showTip(event, 'fs14', 31)" class="fn">msg</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs15', 32)" onmouseover="showTip(event, 'fs15', 32)" class="fn">eprintfn</span> <span class="s">$&quot;Failed: </span><span class="pf">%s</span><span class="s">{</span><span onmouseout="hideTip(event, 'fs14', 33)" onmouseover="showTip(event, 'fs14', 33)" class="fn">msg</span><span class="s">}&quot;</span>
+</code></pre>
+<p>Caching works at two levels — project and file — to skip expensive
+re-analysis for unchanged code:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// Project-level: skip the entire project if nothing changed</span>
+<span class="k">match</span> <span onmouseout="hideTip(event, 'fs6', 34)" onmouseover="showTip(event, 'fs6', 34)" class="id">db</span><span class="pn">.</span><span class="id">GetProjectKey</span><span class="pn">(</span><span class="s">&quot;MyProject&quot;</span><span class="pn">)</span> <span class="k">with</span>
+<span class="pn">|</span> <span onmouseout="hideTip(event, 'fs16', 35)" onmouseover="showTip(event, 'fs16', 35)" class="uc">Some</span> <span onmouseout="hideTip(event, 'fs17', 36)" onmouseover="showTip(event, 'fs17', 36)" class="fn">key</span> <span class="k">when</span> <span onmouseout="hideTip(event, 'fs17', 37)" onmouseover="showTip(event, 'fs17', 37)" class="fn">key</span> <span class="o">=</span> <span class="id">currentKey</span> <span class="k">-&gt;</span> <span class="pn">(</span><span class="pn">)</span> <span class="c">// skip</span>
+<span class="pn">|</span> <span class="id">_</span> <span class="k">-&gt;</span>
+    <span class="c">// File-level: skip individual files within a changed project</span>
+    <span class="k">match</span> <span onmouseout="hideTip(event, 'fs6', 38)" onmouseover="showTip(event, 'fs6', 38)" class="id">db</span><span class="pn">.</span><span class="id">GetFileKey</span><span class="pn">(</span><span class="s">&quot;src/Lib.fs&quot;</span><span class="pn">)</span> <span class="k">with</span>
+    <span class="pn">|</span> <span onmouseout="hideTip(event, 'fs16', 39)" onmouseover="showTip(event, 'fs16', 39)" class="uc">Some</span> <span onmouseout="hideTip(event, 'fs17', 40)" onmouseover="showTip(event, 'fs17', 40)" class="fn">key</span> <span class="k">when</span> <span onmouseout="hideTip(event, 'fs17', 41)" onmouseover="showTip(event, 'fs17', 41)" class="fn">key</span> <span class="o">=</span> <span class="id">currentFileKey</span> <span class="k">-&gt;</span>
+        <span class="c">// Load cached results from DB instead of re-analyzing</span>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs18', 42)" onmouseover="showTip(event, 'fs18', 42)" class="fn">symbols</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 43)" onmouseover="showTip(event, 'fs6', 43)" class="id">db</span><span class="pn">.</span><span class="id">GetSymbolsInFile</span><span class="pn">(</span><span class="s">&quot;src/Lib.fs&quot;</span><span class="pn">)</span>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs19', 44)" onmouseover="showTip(event, 'fs19', 44)" class="fn">deps</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 45)" onmouseover="showTip(event, 'fs6', 45)" class="id">db</span><span class="pn">.</span><span class="id">GetDependenciesFromFile</span><span class="pn">(</span><span class="s">&quot;src/Lib.fs&quot;</span><span class="pn">)</span>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs20', 46)" onmouseover="showTip(event, 'fs20', 46)" class="fn">tests</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 47)" onmouseover="showTip(event, 'fs6', 47)" class="id">db</span><span class="pn">.</span><span class="id">GetTestMethodsInFile</span><span class="pn">(</span><span class="s">&quot;src/Lib.fs&quot;</span><span class="pn">)</span>
+        <span class="c">// ... use cached data</span>
+    <span class="pn">|</span> <span class="id">_</span> <span class="k">-&gt;</span>
+        <span class="c">// File changed — run FCS analysis</span>
+        <span class="c">// ... analyzeSource, then db.SetFileKey(...)</span>
+
+    <span onmouseout="hideTip(event, 'fs6', 48)" onmouseover="showTip(event, 'fs6', 48)" class="id">db</span><span class="pn">.</span><span class="id">RebuildProjects</span><span class="pn">(</span><span class="pn">[</span> <span class="id">combined</span> <span class="pn">]</span><span class="pn">)</span>
+    <span onmouseout="hideTip(event, 'fs6', 49)" onmouseover="showTip(event, 'fs6', 49)" class="id">db</span><span class="pn">.</span><span class="id">SetProjectKey</span><span class="pn">(</span><span class="s">&quot;MyProject&quot;</span><span class="pn">,</span> <span class="id">currentKey</span><span class="pn">)</span>
+</code></pre>
+<p>Cache keys can be anything that changes when source files change.
+Good options:</p>
+<ul>
+<li>
+<strong>VCS tree hash</strong> (recommended) — <code>jj log -r @ -T commit_id</code> or
+<code>git rev-parse HEAD</code> gives a content-addressed hash that changes
+exactly when files change. Fast and correct across branch switches.
+</li>
+<li>
+<strong>File metadata</strong> — path + size + mtime. The CLI uses this by default.
+Simple but can be wrong after <code>git checkout</code> (mtime updates even if
+content is identical).
+</li>
+</ul>
+<h3><a name="2-Find-affected-tests" class="anchor" href="#2-Find-affected-tests">2. Find affected tests</a></h3>
+<p>When you're ready to test, compare the current code against the index
+to find what changed, then ask which tests are affected:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">match</span> <span class="id">selectTests</span> <span onmouseout="hideTip(event, 'fs6', 50)" onmouseover="showTip(event, 'fs6', 50)" class="id">db</span> <span class="id">changedFiles</span> <span class="id">currentSymbolsByFile</span> <span class="k">with</span>
+<span class="pn">|</span> <span class="id">RunSubset</span> <span onmouseout="hideTip(event, 'fs20', 51)" onmouseover="showTip(event, 'fs20', 51)" class="fn">tests</span> <span class="k">-&gt;</span> <span class="c">// only these tests need to run</span>
+<span class="pn">|</span> <span class="id">RunAll</span> <span onmouseout="hideTip(event, 'fs21', 52)" onmouseover="showTip(event, 'fs21', 52)" class="fn">reason</span>   <span class="k">-&gt;</span> <span class="c">// something changed that we can&#39;t analyze — run everything</span>
+</code></pre>
+<p><code>RunSubset</code> gives you a list of specific test methods. <code>RunAll</code> is the
+safe fallback for situations like <code>.fsproj</code> changes or brand new files
+where TestPrune can't be sure what's affected.</p>
+<h3><a name="3-Bonus-Find-dead-code" class="anchor" href="#3-Bonus-Find-dead-code">3. (Bonus) Find dead code</a></h3>
+<p>The same dependency graph can find code that's never reached from your
+entry points:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="id">result</span> <span class="o">=</span> <span class="id">findDeadCode</span> <span onmouseout="hideTip(event, 'fs6', 53)" onmouseover="showTip(event, 'fs6', 53)" class="id">db</span> <span class="pn">[</span> <span class="s">&quot;*.main&quot;</span><span class="pn">;</span> <span class="s">&quot;*.Program.*&quot;</span> <span class="pn">]</span> <span class="k">false</span>
+<span class="c">// result.UnreachableSymbols — functions nothing calls</span>
+</code></pre>
+<p>By default, symbols in test files are excluded from the report. Pass
+<code>true</code> for <code>includeTests</code> to find dead code in your test suite too
+(e.g. unused test helpers):</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="id">result</span> <span class="o">=</span> <span class="id">findDeadCode</span> <span onmouseout="hideTip(event, 'fs6', 54)" onmouseover="showTip(event, 'fs6', 54)" class="id">db</span> <span class="pn">[</span> <span class="s">&quot;Tests.MyTests.*&quot;</span> <span class="pn">]</span> <span class="k">true</span>
+</code></pre>
+<h2><a name="How-it-works" class="anchor" href="#How-it-works">How it works</a></h2>
+<ol>
+<li>
+<strong>Index</strong> — Parse every <code>.fs</code> file, record which functions/types exist
+and what they depend on. Store in SQLite.
+</li>
+<li><strong>Diff</strong> — Look at what files changed since last commit.</li>
+<li>
+<strong>Compare</strong> — Figure out which specific functions changed (added,
+removed, or modified).
+</li>
+<li>
+<strong>Walk</strong> — Follow the dependency graph from changed functions to find
+every test that transitively depends on them.
+</li>
+<li><strong>Run</strong> — Execute only those tests.</li>
+</ol>
+<p>If anything looks uncertain (new files, project file changes), it falls
+back to running everything. Better to run too many tests than miss a
+broken one.</p>
+<h2><a name="Extensions" class="anchor" href="#Extensions">Extensions</a></h2>
+<p>Some dependencies don't show up in code — like HTTP routes mapping to
+handler files. Extensions let you teach TestPrune about these:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span class="id">ITestPruneExtension</span> <span class="o">=</span>
+    <span class="k">abstract</span> <span class="id">Name</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs22', 55)" onmouseover="showTip(event, 'fs22', 55)" class="id">string</span>
+    <span class="k">abstract</span> <span class="id">FindAffectedTests</span><span class="pn">:</span>
+        <span onmouseout="hideTip(event, 'fs6', 56)" onmouseover="showTip(event, 'fs6', 56)" class="id">db</span><span class="pn">:</span> <span class="id">Database</span> <span class="k">-&gt;</span> <span class="id">changedFiles</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs22', 57)" onmouseover="showTip(event, 'fs22', 57)" class="id">string</span> <span onmouseout="hideTip(event, 'fs23', 58)" onmouseover="showTip(event, 'fs23', 58)" class="id">list</span> <span class="k">-&gt;</span> <span class="id">repoRoot</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs22', 59)" onmouseover="showTip(event, 'fs22', 59)" class="id">string</span> <span class="k">-&gt;</span> <span class="id">AffectedTest</span> <span onmouseout="hideTip(event, 'fs23', 60)" onmouseover="showTip(event, 'fs23', 60)" class="id">list</span>
+</code></pre>
+<p><a href="src/TestPrune.Falco/"><code>TestPrune.Falco</code></a> is an extension for Falco
+web apps that maps URL routes to integration tests.</p>
+<h2><a name="Packages" class="anchor" href="#Packages">Packages</a></h2>
+<table>
+<thead>
+<tr class="header">
+<th><p>Package</p></th>
+<th><p>What it's for</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><p><a href="https://www.nuget.org/packages/TestPrune.Core"><code>TestPrune.Core</code></a></p></td>
+<td><p>The library — use this in your build system or editor</p></td>
+</tr>
+<tr class="even">
+<td><p><a href="https://www.nuget.org/packages/TestPrune.Falco"><code>TestPrune.Falco</code></a></p></td>
+<td><p>Extension for Falco web apps (route → test mapping)</p></td>
+</tr>
+<tr class="odd">
+<td><p><code>TestPrune</code></p></td>
+<td><p>CLI tool (reference implementation — see below)</p></td>
+</tr>
+</tbody>
+</table>
+
+<h2><a name="CLI-reference-implementation" class="anchor" href="#CLI-reference-implementation">CLI (reference implementation)</a></h2>
+<p>The <code>TestPrune</code> CLI is a <strong>reference implementation</strong> — it shows how to
+wire up the library, but it's not optimized for production use. In
+particular, FSharp.Compiler.Service analysis is inherently slow (it
+type-checks your entire project), so the CLI re-indexes serially and
+can take a while on large codebases. For real workflows, use
+<code>TestPrune.Core</code> directly in your build system where you can cache
+aggressively, parallelize across projects, and integrate with your
+existing tooling.</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">test</span><span class="o">-</span><span class="id">prune</span> <span class="id">index</span>       <span class="pn">#</span> <span class="id">Build</span> <span class="id">the</span> <span class="id">dependency</span> <span class="id">graph</span>
+<span class="id">test</span><span class="o">-</span><span class="id">prune</span> <span class="id">run</span>         <span class="pn">#</span> <span class="id">Run</span> <span class="id">only</span> <span class="id">affected</span> <span class="id">tests</span>
+<span class="id">test</span><span class="o">-</span><span class="id">prune</span> <span class="id">status</span>      <span class="pn">#</span> <span class="id">Show</span> <span class="id">what</span> <span class="id">would</span> <span class="id">run</span> <span class="pn">(</span><span class="id">dry</span><span class="o">-</span><span class="id">run</span><span class="pn">)</span>
+<span class="id">test</span><span class="o">-</span><span class="id">prune</span> <span class="id">dead</span><span class="o">-</span><span class="id">code</span>   <span class="pn">#</span> <span class="id">Find</span> <span class="id">unreachable</span> <span class="id">production</span> <span class="id">code</span>
+<span class="id">test</span><span class="o">-</span><span class="id">prune</span> <span class="id">dead</span><span class="o">-</span><span class="id">code</span> <span class="o">--</span><span class="id">include</span><span class="o">-</span><span class="id">tests</span>  <span class="pn">#</span> <span class="id">Include</span> <span class="id">test</span> <span class="id">files</span> <span class="k">in</span> <span class="id">report</span>
+</code></pre>
+<h2><a name="Documentation" class="anchor" href="#Documentation">Documentation</a></h2>
+<ul>
+<li><a href="https://michaelglass.github.io/TestPrune/">Full documentation</a></li>
+<li><a href="https://michaelglass.github.io/TestPrune/reference/testprune.html">API reference</a></li>
+</ul>
+<h2><a name="Design-choices" class="anchor" href="#Design-choices">Design choices</a></h2>
+<p><strong>Static analysis, not coverage.</strong> TestPrune reads your code's AST
+instead of instrumenting test runs. This means you don't need to run
+tests to build the graph, and there's no flaky-coverage problem. The
+tradeoff: it might run a few extra tests, but it won't miss broken
+ones. Note that FSharp.Compiler.Service type-checking is not instant —
+plan on caching aggressively (see the file- and project-level caching
+APIs) and parallelizing across projects in your integration.</p>
+<p><strong>Safe by default.</strong> When in doubt, run everything. A missed broken test
+is much worse than running a few unnecessary ones.</p>
+<p><strong>Single-file storage.</strong> The dependency graph is one <code>.test-prune.db</code>
+file. No servers, no services. Rebuilds are atomic.
+<!-- sync:readme:end --></p>
+
+        <div class="fsdocs-tip" id="fs1">val add: x: int -&gt; y: int -&gt; int</div>
+<div class="fsdocs-tip" id="fs2">val x: int</div>
+<div class="fsdocs-tip" id="fs3">val y: int</div>
+<div class="fsdocs-tip" id="fs4">val multiply: x: int -&gt; y: int -&gt; int</div>
+<div class="fsdocs-tip" id="fs5">val checker: obj</div>
+<div class="fsdocs-tip" id="fs6">val db: obj</div>
+<div class="fsdocs-tip" id="fs7">val projOptions: obj</div>
+<div class="fsdocs-tip" id="fs8">Multiple items<br />type Async =
+  static member AsBeginEnd: computation: (&#39;Arg -&gt; Async&lt;&#39;T&gt;) -&gt; (&#39;Arg * AsyncCallback * objnull -&gt; IAsyncResult) * (IAsyncResult -&gt; &#39;T) * (IAsyncResult -&gt; unit)
+  static member AwaitEvent: event: IEvent&lt;&#39;Del,&#39;T&gt; * ?cancelAction: (unit -&gt; unit) -&gt; Async&lt;&#39;T&gt; (requires delegate and &#39;Del :&gt; Delegate)
+  static member AwaitIAsyncResult: iar: IAsyncResult * ?millisecondsTimeout: int -&gt; Async&lt;bool&gt;
+  static member AwaitTask: task: Task&lt;&#39;T&gt; -&gt; Async&lt;&#39;T&gt; + 1 overload
+  static member AwaitWaitHandle: waitHandle: WaitHandle * ?millisecondsTimeout: int -&gt; Async&lt;bool&gt;
+  static member CancelDefaultToken: unit -&gt; unit
+  static member Catch: computation: Async&lt;&#39;T&gt; -&gt; Async&lt;Choice&lt;&#39;T,exn&gt;&gt;
+  static member Choice: computations: Async&lt;&#39;T option&gt; seq -&gt; Async&lt;&#39;T option&gt;
+  static member FromBeginEnd: beginAction: (AsyncCallback * objnull -&gt; IAsyncResult) * endAction: (IAsyncResult -&gt; &#39;T) * ?cancelAction: (unit -&gt; unit) -&gt; Async&lt;&#39;T&gt; + 3 overloads
+  static member FromContinuations: callback: ((&#39;T -&gt; unit) * (exn -&gt; unit) * (OperationCanceledException -&gt; unit) -&gt; unit) -&gt; Async&lt;&#39;T&gt;
+  ...<br /><br />--------------------<br />type Async&lt;&#39;T&gt;</div>
+<div class="fsdocs-tip" id="fs9">static member Async.RunSynchronously: computation: Async&lt;&#39;T&gt; * ?timeout: int * ?cancellationToken: System.Threading.CancellationToken -&gt; &#39;T</div>
+<div class="fsdocs-tip" id="fs10">union case Result.Ok: ResultValue: &#39;T -&gt; Result&lt;&#39;T,&#39;TError&gt;</div>
+<div class="fsdocs-tip" id="fs11">val result: obj</div>
+<div class="fsdocs-tip" id="fs12">val normalized: obj</div>
+<div class="fsdocs-tip" id="fs13">union case Result.Error: ErrorValue: &#39;TError -&gt; Result&lt;&#39;T,&#39;TError&gt;</div>
+<div class="fsdocs-tip" id="fs14">val msg: string</div>
+<div class="fsdocs-tip" id="fs15">val eprintfn: format: Printf.TextWriterFormat&lt;&#39;T&gt; -&gt; &#39;T</div>
+<div class="fsdocs-tip" id="fs16">union case Option.Some: Value: &#39;T -&gt; Option&lt;&#39;T&gt;</div>
+<div class="fsdocs-tip" id="fs17">val key: obj</div>
+<div class="fsdocs-tip" id="fs18">val symbols: obj</div>
+<div class="fsdocs-tip" id="fs19">val deps: obj</div>
+<div class="fsdocs-tip" id="fs20">val tests: obj</div>
+<div class="fsdocs-tip" id="fs21">val reason: obj</div>
+<div class="fsdocs-tip" id="fs22">Multiple items<br />val string: value: &#39;T -&gt; string<br /><br />--------------------<br />type string = System.String</div>
+<div class="fsdocs-tip" id="fs23">type &#39;T list = List&lt;&#39;T&gt;</div>
+
     </div>
 </main>
 <aside id="fsdocs-page-menu">
@@ -133,8 +360,63 @@ by what you changed.
     </a>
   </li>
   <li class="level-2">
-    <a href="#Installation">
-      Installation
+    <a href="#Why">
+      Why?
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Quick-example">
+      Quick example
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Getting-started">
+      Getting started
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#1-Index-your-project">
+      1. Index your project
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#2-Find-affected-tests">
+      2. Find affected tests
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#3-Bonus-Find-dead-code">
+      3. (Bonus) Find dead code
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#How-it-works">
+      How it works
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Extensions">
+      Extensions
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Packages">
+      Packages
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#CLI-reference-implementation">
+      CLI (reference implementation)
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Documentation">
+      Documentation
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Design-choices">
+      Design choices
     </a>
   </li>
 </ul>
