@@ -7,15 +7,15 @@
     <meta content="Michael Glass" name="author">
     <!-- Opengraph properties (https://ogp.me/) -->
     <meta property="og:site_name" content="TestPrune">
-    <meta property="og:title" content="DependencyKind (TestPrune)" />
+    <meta property="og:title" content="Ports (TestPrune)" />
     <meta property="og:url" content="/TestPrune/{{fsdocs-source-basename}}.html">
     <meta property="og:type" content="website" />
     <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="/TestPrune/">
-    <meta name="twitter:title" content="DependencyKind (TestPrune)">
+    <meta name="twitter:title" content="Ports (TestPrune)">
     
-    <title>DependencyKind (TestPrune) | TestPrune</title>
+    <title>Ports (TestPrune) | TestPrune</title>
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
@@ -145,7 +145,7 @@
     <div id="content">
         <div>
   <h2>
-    DependencyKind Type
+    Ports Module
   </h2>
   <dl class="fsdocs-metadata">
     <dt>
@@ -157,50 +157,137 @@
     <dt>
       Assembly: TestPrune.Core.dll
     </dt>
-    <dt>
-      Parent Module: 
-      <a href="/TestPrune/reference/testprune-astanalyzer.html">
-        AstAnalyzer
-      </a>
-    </dt>
-    <dt>
-      Base Type: 
-      <code>obj</code>
-    </dt>
-    <dt>
-      All Interfaces: 
-      <code><span><a href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a href="/TestPrune/reference/testprune-astanalyzer-dependencykind.html">DependencyKind</a>&gt;</span></code>
-      , 
-      <code><a href="https://learn.microsoft.com/dotnet/api/system.collections.istructuralequatable">IStructuralEquatable</a></code>
-      , 
-      <code><span><a href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a href="/TestPrune/reference/testprune-astanalyzer-dependencykind.html">DependencyKind</a>&gt;</span></code>
-      , 
-      <code><a href="https://learn.microsoft.com/dotnet/api/system.icomparable">IComparable</a></code>
-      , 
-      <code><a href="https://learn.microsoft.com/dotnet/api/system.collections.istructuralcomparable">IStructuralComparable</a></code>
-    </dt>
   </dl>
   <div class="fsdocs-xmldoc">
     <div>
       <div class="fsdocs-summary-contents">
         <p class="fsdocs-summary">
-           The kind of edge in a dependency graph (calls, uses type, pattern match, etc.).
+          
         </p>
       </div>
     </div>
   </div>
-  <div></div>
-  <div></div>
-  <div></div>
   <div>
     <h3>
-      Union cases
+      Types
+    </h3>
+    <table class="table outer-list fsdocs-entity-list">
+      <thead>
+        <tr>
+          <td>
+            Type
+          </td>
+          <td>
+            Description
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fsdocs-entity-name">
+            <p>
+              <a name="RouteStore">
+                <a href="/TestPrune/reference/testprune-ports-routestore.html">
+                  RouteStore
+                </a>
+              </a>
+            </p>
+          </td>
+          <td class="fsdocs-entity-xmldoc">
+            <div>
+              <div class="fsdocs-summary-contents">
+                <p class="fsdocs-summary">
+                   Port for reading route handler data from storage.
+                </p>
+              </div>
+              <div class="icon-button-row">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Ports.fs#L39-39" class="fsdocs-source-link" title="Source on GitHub">
+                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
+                </a>
+                <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:TestPrune.Ports.RouteStore\'/>')">
+                  <iconify-icon icon="bi:filetype-xml" height="24" width="24"></iconify-icon>
+                </div>
+                <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:TestPrune.Ports.RouteStore`')">
+                  <iconify-icon icon="bi:filetype-md" height="24" width="24"></iconify-icon>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-entity-name">
+            <p>
+              <a name="SymbolSink">
+                <a href="/TestPrune/reference/testprune-ports-symbolsink.html">
+                  SymbolSink
+                </a>
+              </a>
+            </p>
+          </td>
+          <td class="fsdocs-entity-xmldoc">
+            <div>
+              <div class="fsdocs-summary-contents">
+                <p class="fsdocs-summary">
+                   Port for writing symbol data to storage.
+                </p>
+              </div>
+              <div class="icon-button-row">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Ports.fs#L21-21" class="fsdocs-source-link" title="Source on GitHub">
+                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
+                </a>
+                <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:TestPrune.Ports.SymbolSink\'/>')">
+                  <iconify-icon icon="bi:filetype-xml" height="24" width="24"></iconify-icon>
+                </div>
+                <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:TestPrune.Ports.SymbolSink`')">
+                  <iconify-icon icon="bi:filetype-md" height="24" width="24"></iconify-icon>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-entity-name">
+            <p>
+              <a name="SymbolStore">
+                <a href="/TestPrune/reference/testprune-ports-symbolstore.html">
+                  SymbolStore
+                </a>
+              </a>
+            </p>
+          </td>
+          <td class="fsdocs-entity-xmldoc">
+            <div>
+              <div class="fsdocs-summary-contents">
+                <p class="fsdocs-summary">
+                   Port for reading symbol data from storage.
+                </p>
+              </div>
+              <div class="icon-button-row">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Ports.fs#L7-7" class="fsdocs-source-link" title="Source on GitHub">
+                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
+                </a>
+                <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:TestPrune.Ports.SymbolStore\'/>')">
+                  <iconify-icon icon="bi:filetype-xml" height="24" width="24"></iconify-icon>
+                </div>
+                <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:TestPrune.Ports.SymbolStore`')">
+                  <iconify-icon icon="bi:filetype-md" height="24" width="24"></iconify-icon>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <h3>
+      Functions and values
     </h3>
     <table class="table outer-list fsdocs-member-list">
       <thead>
         <tr>
           <td class="fsdocs-member-list-header">
-            Union case
+            Function or value
           </td>
           <td class="fsdocs-member-list-header">
             Description
@@ -212,149 +299,235 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '43', 43)" onmouseover="showTip(event, '43', 43)">
+              <code onmouseout="hideTip(event, '21', 21)" onmouseover="showTip(event, '21', 21)">
                 <p>
-                  <a id="Calls">
-                    <a href="#Calls">
-                      <code><span>Calls</span></code>
+                  <a id="toRouteStore">
+                    <a href="#toRouteStore">
+                      <code><span>toRouteStore&#32;<span>db</span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="43">
+              <div class="fsdocs-tip" id="21">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Calls</span></code>
+                  <code><span>toRouteStore&#32;<span>db</span></span></code>
                   <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        db
+                      </b>
+                      :
+                      <code><a href="/TestPrune/reference/testprune-database-database.html">Database</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="/TestPrune/reference/testprune-ports-routestore.html">RouteStore</a></code>
+                  </span>
                   <br/>
                 </div>
               </div>
             </div>
           </td>
           <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <div class="fsdocs-summary-contents">
-                <p class="fsdocs-summary">
-                  
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-summary-contents">
+                    <p class="fsdocs-summary">
+                       Create a RouteStore from a Database instance.
+                    </p>
+                  </div>
+                  <div class="icon-button-row">
+                    <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Ports.fs#L44-44" class="fsdocs-source-link" title="Source on GitHub">
+                      <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
+                    </a>
+                    <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:TestPrune.Ports.toRouteStore\'/>')">
+                      <iconify-icon icon="bi:filetype-xml" height="24" width="24"></iconify-icon>
+                    </div>
+                    <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:TestPrune.Ports.toRouteStore`')">
+                      <iconify-icon icon="bi:filetype-md" height="24" width="24"></iconify-icon>
+                    </div>
+                  </div>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    db
+                  </span>
+                  :
+                  <code><a href="/TestPrune/reference/testprune-database-database.html">Database</a></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><a href="/TestPrune/reference/testprune-ports-routestore.html">RouteStore</a></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '22', 22)" onmouseover="showTip(event, '22', 22)">
+                <p>
+                  <a id="toSymbolSink">
+                    <a href="#toSymbolSink">
+                      <code><span>toSymbolSink&#32;<span>db</span></span></code>
+                    </a>
+                  </a>
                 </p>
+              </code>
+              <div class="fsdocs-tip" id="22">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>toSymbolSink&#32;<span>db</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        db
+                      </b>
+                      :
+                      <code><a href="/TestPrune/reference/testprune-database-database.html">Database</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="/TestPrune/reference/testprune-ports-symbolsink.html">SymbolSink</a></code>
+                  </span>
+                  <br/>
+                </div>
               </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L35-35" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Ports.fs#L48-48" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    db
+                  </span>
+                  :
+                  <code><a href="/TestPrune/reference/testprune-database-database.html">Database</a></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><a href="/TestPrune/reference/testprune-ports-symbolsink.html">SymbolSink</a></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
             </div>
           </td>
         </tr>
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '44', 44)" onmouseover="showTip(event, '44', 44)">
+              <code onmouseout="hideTip(event, '23', 23)" onmouseover="showTip(event, '23', 23)">
                 <p>
-                  <a id="PatternMatches">
-                    <a href="#PatternMatches">
-                      <code><span>PatternMatches</span></code>
+                  <a id="toSymbolStore">
+                    <a href="#toSymbolStore">
+                      <code><span>toSymbolStore&#32;<span>db</span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="44">
+              <div class="fsdocs-tip" id="23">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>PatternMatches</span></code>
+                  <code><span>toSymbolStore&#32;<span>db</span></span></code>
                   <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        db
+                      </b>
+                      :
+                      <code><a href="/TestPrune/reference/testprune-database-database.html">Database</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="/TestPrune/reference/testprune-ports-symbolstore.html">SymbolStore</a></code>
+                  </span>
                   <br/>
                 </div>
               </div>
             </div>
           </td>
           <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <div class="fsdocs-summary-contents">
-                <p class="fsdocs-summary">
-                  
-                </p>
-              </div>
-              <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L37-37" class="fsdocs-source-link" title="Source on GitHub">
-                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
-                </a>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '45', 45)" onmouseover="showTip(event, '45', 45)">
-                <p>
-                  <a id="References">
-                    <a href="#References">
-                      <code><span>References</span></code>
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-summary-contents">
+                    <p class="fsdocs-summary">
+                       Create a SymbolStore from a Database instance.
+                    </p>
+                  </div>
+                  <div class="icon-button-row">
+                    <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Ports.fs#L25-25" class="fsdocs-source-link" title="Source on GitHub">
+                      <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                     </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="45">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code><span>References</span></code>
-                  <br/>
-                  <br/>
+                    <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:TestPrune.Ports.toSymbolStore\'/>')">
+                      <iconify-icon icon="bi:filetype-xml" height="24" width="24"></iconify-icon>
+                    </div>
+                    <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:TestPrune.Ports.toSymbolStore`')">
+                      <iconify-icon icon="bi:filetype-md" height="24" width="24"></iconify-icon>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <div class="fsdocs-summary-contents">
-                <p class="fsdocs-summary">
-                  
-                </p>
-              </div>
-              <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L38-38" class="fsdocs-source-link" title="Source on GitHub">
-                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
-                </a>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '46', 46)" onmouseover="showTip(event, '46', 46)">
-                <p>
-                  <a id="UsesType">
-                    <a href="#UsesType">
-                      <code><span>UsesType</span></code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="46">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code><span>UsesType</span></code>
-                  <br/>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <div class="fsdocs-summary-contents">
-                <p class="fsdocs-summary">
-                  
-                </p>
-              </div>
-              <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L36-36" class="fsdocs-source-link" title="Source on GitHub">
-                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
-                </a>
-              </div>
-            </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    db
+                  </span>
+                  :
+                  <code><a href="/TestPrune/reference/testprune-database-database.html">Database</a></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><a href="/TestPrune/reference/testprune-ports-symbolstore.html">SymbolStore</a></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
           </td>
         </tr>
       </tbody>
@@ -363,210 +536,10 @@
   <div></div>
   <div></div>
   <div></div>
-  <div>
-    <h3>
-      Instance members
-    </h3>
-    <table class="table outer-list fsdocs-member-list">
-      <thead>
-        <tr>
-          <td class="fsdocs-member-list-header">
-            Instance member
-          </td>
-          <td class="fsdocs-member-list-header">
-            Description
-            <fsdocs-details-toggle></fsdocs-details-toggle>
-          </td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '47', 47)" onmouseover="showTip(event, '47', 47)">
-                <p>
-                  <a id="IsCalls">
-                    <a href="#IsCalls">
-                      <code><span>this.IsCalls</span></code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="47">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code><span>this.IsCalls</span></code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Returns: 
-                    <code>bool</code>
-                  </span>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-member-xmldoc-column">
-              <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L35-35" class="fsdocs-source-link" title="Source on GitHub">
-                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
-                </a>
-              </div>
-              <dl class="fsdocs-returns">
-                <dt>
-                  <span class="fsdocs-return-name">
-                    Returns: 
-                  </span>
-                  <code>bool</code>
-                </dt>
-                <dd class="fsdocs-return-docs"></dd>
-              </dl>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '48', 48)" onmouseover="showTip(event, '48', 48)">
-                <p>
-                  <a id="IsPatternMatches">
-                    <a href="#IsPatternMatches">
-                      <code><span>this.IsPatternMatches</span></code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="48">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code><span>this.IsPatternMatches</span></code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Returns: 
-                    <code>bool</code>
-                  </span>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-member-xmldoc-column">
-              <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L37-37" class="fsdocs-source-link" title="Source on GitHub">
-                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
-                </a>
-              </div>
-              <dl class="fsdocs-returns">
-                <dt>
-                  <span class="fsdocs-return-name">
-                    Returns: 
-                  </span>
-                  <code>bool</code>
-                </dt>
-                <dd class="fsdocs-return-docs"></dd>
-              </dl>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '49', 49)" onmouseover="showTip(event, '49', 49)">
-                <p>
-                  <a id="IsReferences">
-                    <a href="#IsReferences">
-                      <code><span>this.IsReferences</span></code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="49">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code><span>this.IsReferences</span></code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Returns: 
-                    <code>bool</code>
-                  </span>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-member-xmldoc-column">
-              <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L38-38" class="fsdocs-source-link" title="Source on GitHub">
-                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
-                </a>
-              </div>
-              <dl class="fsdocs-returns">
-                <dt>
-                  <span class="fsdocs-return-name">
-                    Returns: 
-                  </span>
-                  <code>bool</code>
-                </dt>
-                <dd class="fsdocs-return-docs"></dd>
-              </dl>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '50', 50)" onmouseover="showTip(event, '50', 50)">
-                <p>
-                  <a id="IsUsesType">
-                    <a href="#IsUsesType">
-                      <code><span>this.IsUsesType</span></code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="50">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code><span>this.IsUsesType</span></code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Returns: 
-                    <code>bool</code>
-                  </span>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-member-xmldoc-column">
-              <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L36-36" class="fsdocs-source-link" title="Source on GitHub">
-                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
-                </a>
-              </div>
-              <dl class="fsdocs-returns">
-                <dt>
-                  <span class="fsdocs-return-name">
-                    Returns: 
-                  </span>
-                  <code>bool</code>
-                </dt>
-                <dd class="fsdocs-return-docs"></dd>
-              </dl>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
   <div></div>
 </div>
         

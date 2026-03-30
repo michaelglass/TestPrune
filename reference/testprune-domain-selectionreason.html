@@ -7,15 +7,15 @@
     <meta content="Michael Glass" name="author">
     <!-- Opengraph properties (https://ogp.me/) -->
     <meta property="og:site_name" content="TestPrune">
-    <meta property="og:title" content="SymbolKind (TestPrune)" />
+    <meta property="og:title" content="SelectionReason (TestPrune)" />
     <meta property="og:url" content="/TestPrune/{{fsdocs-source-basename}}.html">
     <meta property="og:type" content="website" />
     <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="/TestPrune/">
-    <meta name="twitter:title" content="SymbolKind (TestPrune)">
+    <meta name="twitter:title" content="SelectionReason (TestPrune)">
     
-    <title>SymbolKind (TestPrune) | TestPrune</title>
+    <title>SelectionReason (TestPrune) | TestPrune</title>
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
@@ -145,7 +145,7 @@
     <div id="content">
         <div>
   <h2>
-    SymbolKind Type
+    SelectionReason Type
   </h2>
   <dl class="fsdocs-metadata">
     <dt>
@@ -159,8 +159,8 @@
     </dt>
     <dt>
       Parent Module: 
-      <a href="/TestPrune/reference/testprune-astanalyzer.html">
-        AstAnalyzer
+      <a href="/TestPrune/reference/testprune-domain.html">
+        Domain
       </a>
     </dt>
     <dt>
@@ -169,11 +169,11 @@
     </dt>
     <dt>
       All Interfaces: 
-      <code><span><a href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a href="/TestPrune/reference/testprune-astanalyzer-symbolkind.html">SymbolKind</a>&gt;</span></code>
+      <code><span><a href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a href="/TestPrune/reference/testprune-domain-selectionreason.html">SelectionReason</a>&gt;</span></code>
       , 
       <code><a href="https://learn.microsoft.com/dotnet/api/system.collections.istructuralequatable">IStructuralEquatable</a></code>
       , 
-      <code><span><a href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a href="/TestPrune/reference/testprune-astanalyzer-symbolkind.html">SymbolKind</a>&gt;</span></code>
+      <code><span><a href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a href="/TestPrune/reference/testprune-domain-selectionreason.html">SelectionReason</a>&gt;</span></code>
       , 
       <code><a href="https://learn.microsoft.com/dotnet/api/system.icomparable">IComparable</a></code>
       , 
@@ -184,7 +184,7 @@
     <div>
       <div class="fsdocs-summary-contents">
         <p class="fsdocs-summary">
-           Discriminated union for kinds of F# symbols (function, type, DU case, etc.).
+          
         </p>
       </div>
     </div>
@@ -212,222 +212,286 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '61', 61)" onmouseover="showTip(event, '61', 61)">
+              <code onmouseout="hideTip(event, '151', 151)" onmouseover="showTip(event, '151', 151)">
                 <p>
-                  <a id="DuCase">
-                    <a href="#DuCase">
-                      <code><span>DuCase</span></code>
+                  <a id="AnalysisFailedFallback">
+                    <a href="#AnalysisFailedFallback">
+                      <code><span>AnalysisFailedFallback&#32;file</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="61">
+              <div class="fsdocs-tip" id="151">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>DuCase</span></code>
+                  <code><span>AnalysisFailedFallback&#32;file</span></code>
                   <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        file
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
                   <br/>
                 </div>
               </div>
             </div>
           </td>
           <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <div class="fsdocs-summary-contents">
-                <p class="fsdocs-summary">
-                  
-                </p>
-              </div>
+            <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L18-18" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Domain.fs#L31-31" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    file
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
             </div>
           </td>
         </tr>
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '62', 62)" onmouseover="showTip(event, '62', 62)">
+              <code onmouseout="hideTip(event, '152', 152)" onmouseover="showTip(event, '152', 152)">
                 <p>
-                  <a id="Function">
-                    <a href="#Function">
-                      <code><span>Function</span></code>
+                  <a id="FsprojChanged">
+                    <a href="#FsprojChanged">
+                      <code><span>FsprojChanged&#32;file</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="62">
+              <div class="fsdocs-tip" id="152">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Function</span></code>
+                  <code><span>FsprojChanged&#32;file</span></code>
                   <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        file
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
                   <br/>
                 </div>
               </div>
             </div>
           </td>
           <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <div class="fsdocs-summary-contents">
-                <p class="fsdocs-summary">
-                  
-                </p>
-              </div>
+            <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L16-16" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Domain.fs#L29-29" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    file
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
             </div>
           </td>
         </tr>
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '63', 63)" onmouseover="showTip(event, '63', 63)">
+              <code onmouseout="hideTip(event, '153', 153)" onmouseover="showTip(event, '153', 153)">
                 <p>
-                  <a id="Module">
-                    <a href="#Module">
-                      <code><span>Module</span></code>
+                  <a id="NewFileNotIndexed">
+                    <a href="#NewFileNotIndexed">
+                      <code><span>NewFileNotIndexed&#32;file</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="63">
+              <div class="fsdocs-tip" id="153">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Module</span></code>
+                  <code><span>NewFileNotIndexed&#32;file</span></code>
                   <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        file
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
                   <br/>
                 </div>
               </div>
             </div>
           </td>
           <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <div class="fsdocs-summary-contents">
-                <p class="fsdocs-summary">
-                  
-                </p>
-              </div>
+            <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L19-19" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Domain.fs#L30-30" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    file
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
             </div>
           </td>
         </tr>
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '64', 64)" onmouseover="showTip(event, '64', 64)">
+              <code onmouseout="hideTip(event, '154', 154)" onmouseover="showTip(event, '154', 154)">
                 <p>
-                  <a id="Property">
-                    <a href="#Property">
-                      <code><span>Property</span></code>
+                  <a id="SymbolChanged">
+                    <a href="#SymbolChanged">
+                      <code><span>SymbolChanged(<span>symbolName,&#32;change</span>)</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="64">
+              <div class="fsdocs-tip" id="154">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Property</span></code>
+                  <code><span>SymbolChanged(<span>symbolName,&#32;change</span>)</span></code>
                   <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        symbolName
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        change
+                      </b>
+                      :
+                      <code><a href="/TestPrune/reference/testprune-domain-changekind.html">ChangeKind</a></code>
+                    </span>
+                    <br/>
+                  </ul>
                   <br/>
                 </div>
               </div>
             </div>
           </td>
           <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <div class="fsdocs-summary-contents">
-                <p class="fsdocs-summary">
-                  
-                </p>
-              </div>
+            <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L21-21" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Domain.fs#L27-27" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    symbolName
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    change
+                  </span>
+                  :
+                  <code><a href="/TestPrune/reference/testprune-domain-changekind.html">ChangeKind</a></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
             </div>
           </td>
         </tr>
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '65', 65)" onmouseover="showTip(event, '65', 65)">
+              <code onmouseout="hideTip(event, '155', 155)" onmouseover="showTip(event, '155', 155)">
                 <p>
-                  <a id="Type">
-                    <a href="#Type">
-                      <code><span>Type</span></code>
+                  <a id="TransitiveDependency">
+                    <a href="#TransitiveDependency">
+                      <code><span>TransitiveDependency&#32;chain</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="65">
+              <div class="fsdocs-tip" id="155">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Type</span></code>
+                  <code><span>TransitiveDependency&#32;chain</span></code>
                   <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        chain
+                      </b>
+                      :
+                      <code><span>string&#32;list</span></code>
+                    </span>
+                    <br/>
+                  </ul>
                   <br/>
                 </div>
               </div>
             </div>
           </td>
           <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <div class="fsdocs-summary-contents">
-                <p class="fsdocs-summary">
-                  
-                </p>
-              </div>
+            <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L17-17" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Domain.fs#L28-28" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '66', 66)" onmouseover="showTip(event, '66', 66)">
-                <p>
-                  <a id="Value">
-                    <a href="#Value">
-                      <code><span>Value</span></code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="66">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code><span>Value</span></code>
-                  <br/>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <div class="fsdocs-summary-contents">
-                <p class="fsdocs-summary">
-                  
-                </p>
-              </div>
-              <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L20-20" class="fsdocs-source-link" title="Source on GitHub">
-                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
-                </a>
-              </div>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    chain
+                  </span>
+                  :
+                  <code><span>string&#32;list</span></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
             </div>
           </td>
         </tr>
@@ -457,19 +521,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '67', 67)" onmouseover="showTip(event, '67', 67)">
+              <code onmouseout="hideTip(event, '156', 156)" onmouseover="showTip(event, '156', 156)">
                 <p>
-                  <a id="IsDuCase">
-                    <a href="#IsDuCase">
-                      <code><span>this.IsDuCase</span></code>
+                  <a id="IsAnalysisFailedFallback">
+                    <a href="#IsAnalysisFailedFallback">
+                      <code><span>this.IsAnalysisFailedFallback</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="67">
+              <div class="fsdocs-tip" id="156">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>this.IsDuCase</span></code>
+                  <code><span>this.IsAnalysisFailedFallback</span></code>
                   <br/>
                   <br/>
                   <span>
@@ -484,7 +548,7 @@
           <td class="fsdocs-member-xmldoc">
             <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L18-18" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Domain.fs#L31-31" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
@@ -503,19 +567,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '68', 68)" onmouseover="showTip(event, '68', 68)">
+              <code onmouseout="hideTip(event, '157', 157)" onmouseover="showTip(event, '157', 157)">
                 <p>
-                  <a id="IsFunction">
-                    <a href="#IsFunction">
-                      <code><span>this.IsFunction</span></code>
+                  <a id="IsFsprojChanged">
+                    <a href="#IsFsprojChanged">
+                      <code><span>this.IsFsprojChanged</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="68">
+              <div class="fsdocs-tip" id="157">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>this.IsFunction</span></code>
+                  <code><span>this.IsFsprojChanged</span></code>
                   <br/>
                   <br/>
                   <span>
@@ -530,7 +594,7 @@
           <td class="fsdocs-member-xmldoc">
             <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L16-16" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Domain.fs#L29-29" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
@@ -549,19 +613,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '69', 69)" onmouseover="showTip(event, '69', 69)">
+              <code onmouseout="hideTip(event, '158', 158)" onmouseover="showTip(event, '158', 158)">
                 <p>
-                  <a id="IsModule">
-                    <a href="#IsModule">
-                      <code><span>this.IsModule</span></code>
+                  <a id="IsNewFileNotIndexed">
+                    <a href="#IsNewFileNotIndexed">
+                      <code><span>this.IsNewFileNotIndexed</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="69">
+              <div class="fsdocs-tip" id="158">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>this.IsModule</span></code>
+                  <code><span>this.IsNewFileNotIndexed</span></code>
                   <br/>
                   <br/>
                   <span>
@@ -576,7 +640,7 @@
           <td class="fsdocs-member-xmldoc">
             <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L19-19" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Domain.fs#L30-30" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
@@ -595,19 +659,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '70', 70)" onmouseover="showTip(event, '70', 70)">
+              <code onmouseout="hideTip(event, '159', 159)" onmouseover="showTip(event, '159', 159)">
                 <p>
-                  <a id="IsProperty">
-                    <a href="#IsProperty">
-                      <code><span>this.IsProperty</span></code>
+                  <a id="IsSymbolChanged">
+                    <a href="#IsSymbolChanged">
+                      <code><span>this.IsSymbolChanged</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="70">
+              <div class="fsdocs-tip" id="159">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>this.IsProperty</span></code>
+                  <code><span>this.IsSymbolChanged</span></code>
                   <br/>
                   <br/>
                   <span>
@@ -622,7 +686,7 @@
           <td class="fsdocs-member-xmldoc">
             <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L21-21" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Domain.fs#L27-27" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
@@ -641,19 +705,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '71', 71)" onmouseover="showTip(event, '71', 71)">
+              <code onmouseout="hideTip(event, '160', 160)" onmouseover="showTip(event, '160', 160)">
                 <p>
-                  <a id="IsType">
-                    <a href="#IsType">
-                      <code><span>this.IsType</span></code>
+                  <a id="IsTransitiveDependency">
+                    <a href="#IsTransitiveDependency">
+                      <code><span>this.IsTransitiveDependency</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="71">
+              <div class="fsdocs-tip" id="160">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>this.IsType</span></code>
+                  <code><span>this.IsTransitiveDependency</span></code>
                   <br/>
                   <br/>
                   <span>
@@ -668,53 +732,7 @@
           <td class="fsdocs-member-xmldoc">
             <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L17-17" class="fsdocs-source-link" title="Source on GitHub">
-                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
-                </a>
-              </div>
-              <dl class="fsdocs-returns">
-                <dt>
-                  <span class="fsdocs-return-name">
-                    Returns: 
-                  </span>
-                  <code>bool</code>
-                </dt>
-                <dd class="fsdocs-return-docs"></dd>
-              </dl>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '72', 72)" onmouseover="showTip(event, '72', 72)">
-                <p>
-                  <a id="IsValue">
-                    <a href="#IsValue">
-                      <code><span>this.IsValue</span></code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="72">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code><span>this.IsValue</span></code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Returns: 
-                    <code>bool</code>
-                  </span>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-member-xmldoc-column">
-              <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L20-20" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/Domain.fs#L28-28" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>

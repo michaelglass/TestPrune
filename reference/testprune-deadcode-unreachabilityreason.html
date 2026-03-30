@@ -7,15 +7,15 @@
     <meta content="Michael Glass" name="author">
     <!-- Opengraph properties (https://ogp.me/) -->
     <meta property="og:site_name" content="TestPrune">
-    <meta property="og:title" content="Dependency (TestPrune)" />
+    <meta property="og:title" content="UnreachabilityReason (TestPrune)" />
     <meta property="og:url" content="/TestPrune/{{fsdocs-source-basename}}.html">
     <meta property="og:type" content="website" />
     <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="/TestPrune/">
-    <meta name="twitter:title" content="Dependency (TestPrune)">
+    <meta name="twitter:title" content="UnreachabilityReason (TestPrune)">
     
-    <title>Dependency (TestPrune) | TestPrune</title>
+    <title>UnreachabilityReason (TestPrune) | TestPrune</title>
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
@@ -145,7 +145,7 @@
     <div id="content">
         <div>
   <h2>
-    Dependency Type
+    UnreachabilityReason Type
   </h2>
   <dl class="fsdocs-metadata">
     <dt>
@@ -159,8 +159,8 @@
     </dt>
     <dt>
       Parent Module: 
-      <a href="/TestPrune/reference/testprune-astanalyzer.html">
-        AstAnalyzer
+      <a href="/TestPrune/reference/testprune-deadcode.html">
+        DeadCode
       </a>
     </dt>
     <dt>
@@ -169,11 +169,11 @@
     </dt>
     <dt>
       All Interfaces: 
-      <code><span><a href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a href="/TestPrune/reference/testprune-astanalyzer-dependency.html">Dependency</a>&gt;</span></code>
+      <code><span><a href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a href="/TestPrune/reference/testprune-deadcode-unreachabilityreason.html">UnreachabilityReason</a>&gt;</span></code>
       , 
       <code><a href="https://learn.microsoft.com/dotnet/api/system.collections.istructuralequatable">IStructuralEquatable</a></code>
       , 
-      <code><span><a href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a href="/TestPrune/reference/testprune-astanalyzer-dependency.html">Dependency</a>&gt;</span></code>
+      <code><span><a href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a href="/TestPrune/reference/testprune-deadcode-unreachabilityreason.html">UnreachabilityReason</a>&gt;</span></code>
       , 
       <code><a href="https://learn.microsoft.com/dotnet/api/system.icomparable">IComparable</a></code>
       , 
@@ -184,7 +184,7 @@
     <div>
       <div class="fsdocs-summary-contents">
         <p class="fsdocs-summary">
-           A directed dependency from one symbol to another, with its kind.
+          
         </p>
       </div>
     </div>
@@ -192,16 +192,15 @@
   <div></div>
   <div></div>
   <div></div>
-  <div></div>
   <div>
     <h3>
-      Record fields
+      Union cases
     </h3>
     <table class="table outer-list fsdocs-member-list">
       <thead>
         <tr>
           <td class="fsdocs-member-list-header">
-            Record Field
+            Union case
           </td>
           <td class="fsdocs-member-list-header">
             Description
@@ -213,25 +212,32 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '40', 40)" onmouseover="showTip(event, '40', 40)">
+              <code onmouseout="hideTip(event, '103', 103)" onmouseover="showTip(event, '103', 103)">
                 <p>
-                  <a id="FromSymbol">
-                    <a href="#FromSymbol">
-                      <code>FromSymbol</code>
+                  <a id="DisconnectedFromEntryPoints">
+                    <a href="#DisconnectedFromEntryPoints">
+                      <code><span>DisconnectedFromEntryPoints&#32;incomingFrom</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="40">
+              <div class="fsdocs-tip" id="103">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code>FromSymbol</code>
+                  <code><span>DisconnectedFromEntryPoints&#32;incomingFrom</span></code>
                   <br/>
                   <br/>
-                  <span>
-                    Field type: 
-                    <code>string</code>
-                  </span>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        incomingFrom
+                      </b>
+                      :
+                      <code><span>string&#32;list</span></code>
+                    </span>
+                    <br/>
+                  </ul>
                   <br/>
                 </div>
               </div>
@@ -240,18 +246,19 @@
           <td class="fsdocs-member-xmldoc">
             <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L42-42" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/DeadCode.fs#L15-15" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
-              <dl class="fsdocs-returns">
-                <dt>
-                  <span class="fsdocs-return-name">
-                    Field type: 
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    incomingFrom
                   </span>
-                  <code>string</code>
+                  :
+                  <code><span>string&#32;list</span></code>
                 </dt>
-                <dd class="fsdocs-return-docs"></dd>
+                <dd class="fsdocs-param-docs"></dd>
               </dl>
             </div>
           </td>
@@ -259,92 +266,37 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '41', 41)" onmouseover="showTip(event, '41', 41)">
+              <code onmouseout="hideTip(event, '104', 104)" onmouseover="showTip(event, '104', 104)">
                 <p>
-                  <a id="Kind">
-                    <a href="#Kind">
-                      <code>Kind</code>
+                  <a id="NoIncomingEdges">
+                    <a href="#NoIncomingEdges">
+                      <code><span>NoIncomingEdges</span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="41">
+              <div class="fsdocs-tip" id="104">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code>Kind</code>
+                  <code><span>NoIncomingEdges</span></code>
                   <br/>
-                  <br/>
-                  <span>
-                    Field type: 
-                    <code><a href="/TestPrune/reference/testprune-astanalyzer-dependencykind.html">DependencyKind</a></code>
-                  </span>
                   <br/>
                 </div>
               </div>
             </div>
           </td>
           <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-member-xmldoc-column">
-              <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L44-44" class="fsdocs-source-link" title="Source on GitHub">
-                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
-                </a>
-              </div>
-              <dl class="fsdocs-returns">
-                <dt>
-                  <span class="fsdocs-return-name">
-                    Field type: 
-                  </span>
-                  <code><a href="/TestPrune/reference/testprune-astanalyzer-dependencykind.html">DependencyKind</a></code>
-                </dt>
-                <dd class="fsdocs-return-docs"></dd>
-              </dl>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '42', 42)" onmouseover="showTip(event, '42', 42)">
-                <p>
-                  <a id="ToSymbol">
-                    <a href="#ToSymbol">
-                      <code>ToSymbol</code>
-                    </a>
-                  </a>
+            <div class="fsdocs-summary">
+              <div class="fsdocs-summary-contents">
+                <p class="fsdocs-summary">
+                  
                 </p>
-              </code>
-              <div class="fsdocs-tip" id="42">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code>ToSymbol</code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Field type: 
-                    <code>string</code>
-                  </span>
-                  <br/>
-                </div>
               </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-member-xmldoc-column">
               <div class="icon-button-row">
-                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/AstAnalyzer.fs#L43-43" class="fsdocs-source-link" title="Source on GitHub">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/DeadCode.fs#L14-14" class="fsdocs-source-link" title="Source on GitHub">
                   <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                 </a>
               </div>
-              <dl class="fsdocs-returns">
-                <dt>
-                  <span class="fsdocs-return-name">
-                    Field type: 
-                  </span>
-                  <code>string</code>
-                </dt>
-                <dd class="fsdocs-return-docs"></dd>
-              </dl>
             </div>
           </td>
         </tr>
@@ -354,6 +306,118 @@
   <div></div>
   <div></div>
   <div></div>
+  <div>
+    <h3>
+      Instance members
+    </h3>
+    <table class="table outer-list fsdocs-member-list">
+      <thead>
+        <tr>
+          <td class="fsdocs-member-list-header">
+            Instance member
+          </td>
+          <td class="fsdocs-member-list-header">
+            Description
+            <fsdocs-details-toggle></fsdocs-details-toggle>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '105', 105)" onmouseover="showTip(event, '105', 105)">
+                <p>
+                  <a id="IsDisconnectedFromEntryPoints">
+                    <a href="#IsDisconnectedFromEntryPoints">
+                      <code><span>this.IsDisconnectedFromEntryPoints</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="105">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>this.IsDisconnectedFromEntryPoints</span></code>
+                  <br/>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>bool</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-member-xmldoc-column">
+              <div class="icon-button-row">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/DeadCode.fs#L15-15" class="fsdocs-source-link" title="Source on GitHub">
+                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
+                </a>
+              </div>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code>bool</code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '106', 106)" onmouseover="showTip(event, '106', 106)">
+                <p>
+                  <a id="IsNoIncomingEdges">
+                    <a href="#IsNoIncomingEdges">
+                      <code><span>this.IsNoIncomingEdges</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="106">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>this.IsNoIncomingEdges</span></code>
+                  <br/>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>bool</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-member-xmldoc-column">
+              <div class="icon-button-row">
+                <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/DeadCode.fs#L14-14" class="fsdocs-source-link" title="Source on GitHub">
+                  <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
+                </a>
+              </div>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code>bool</code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <div></div>
 </div>
         

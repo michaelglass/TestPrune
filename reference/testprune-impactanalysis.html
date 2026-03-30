@@ -44,7 +44,33 @@
                     Notes</a></li>
                 <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/">Source
                     Repository</a></li>
-                
+                <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-design.html">
+    Dead Code False Positives: Design
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-plan.html">
+    Dead Code False Positives Implementation Plan
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-design.html">
+    TestPrune Re-Architecture: Functional Core, Imperative Shell
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-plan.html">
+    Functional Core, Imperative Shell — Implementation Plan
+
+  </a>
+</li>
                 <li class="nav-header">
   API Reference
 </li>             
@@ -78,7 +104,33 @@
             Notes</a></li>
         <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/">Source
             Repository</a></li>
-        
+        <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-design.html">
+    Dead Code False Positives: Design
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-plan.html">
+    Dead Code False Positives Implementation Plan
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-design.html">
+    TestPrune Re-Architecture: Functional Core, Imperative Shell
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-plan.html">
+    Functional Core, Imperative Shell — Implementation Plan
+
+  </a>
+</li>
         <li class="nav-header">
   API Reference
 </li>             
@@ -185,29 +237,37 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '10', 10)" onmouseover="showTip(event, '10', 10)">
+              <code onmouseout="hideTip(event, '19', 19)" onmouseover="showTip(event, '19', 19)">
                 <p>
                   <a id="selectTests">
                     <a href="#selectTests">
-                      <code><span>selectTests&#32;<span>db&#32;changedFiles&#32;currentSymbolsByFile</span></span></code>
+                      <code><span>selectTests&#32;<span>getStoredSymbols&#32;queryAffectedTests&#32;changedFiles&#32;currentSymbolsByFile</span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="10">
+              <div class="fsdocs-tip" id="19">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>selectTests&#32;<span>db&#32;changedFiles&#32;currentSymbolsByFile</span></span></code>
+                  <code><span>selectTests&#32;<span>getStoredSymbols&#32;queryAffectedTests&#32;changedFiles&#32;currentSymbolsByFile</span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
                   <ul>
                     <span>
                       <b>
-                        db
+                        getStoredSymbols
                       </b>
                       :
-                      <code><a href="/TestPrune/reference/testprune-database-database.html">Database</a></code>
+                      <code><span>string&#32;->&#32;<span><a href="/TestPrune/reference/testprune-astanalyzer-symbolinfo.html">SymbolInfo</a>&#32;list</span></span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        queryAffectedTests
+                      </b>
+                      :
+                      <code><span><span>string&#32;list</span>&#32;->&#32;<span><a href="/TestPrune/reference/testprune-astanalyzer-testmethodinfo.html">TestMethodInfo</a>&#32;list</span></span></code>
                     </span>
                     <br/>
                     <span>
@@ -230,7 +290,7 @@
                   <br/>
                   <span>
                     Returns: 
-                    <code><a href="/TestPrune/reference/testprune-impactanalysis-testselection.html">TestSelection</a></code>
+                    <code><span><a href="/TestPrune/reference/testprune-impactanalysis-testselection.html">TestSelection</a>&#32;*&#32;<span><a href="/TestPrune/reference/testprune-domain-analysisevent.html">AnalysisEvent</a>&#32;list</span></span></code>
                   </span>
                   <br/>
                 </div>
@@ -244,15 +304,10 @@
                   <div class="fsdocs-summary-contents">
                     <p class="fsdocs-summary">
                        Given changed files, determine which tests to run.
- 1. Check for .fsproj changes -> RunAll
- 2. For each changed file, get stored symbols and current symbols
- 3. Detect changed symbols via SymbolDiff
- 4. Query DB for transitively dependent test methods
- 5. If any file is new (not indexed) -> RunAll (conservative)
                     </p>
                   </div>
                   <div class="icon-button-row">
-                    <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/ImpactAnalysis.fs#L18-18" class="fsdocs-source-link" title="Source on GitHub">
+                    <a href="https://github.com/michaelglass/TestPrune/tree/master/src/TestPrune.Core/ImpactAnalysis.fs#L13-13" class="fsdocs-source-link" title="Source on GitHub">
                       <iconify-icon icon="ri:github-fill" height="24" width="24"></iconify-icon>
                     </a>
                     <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:TestPrune.ImpactAnalysis.selectTests\'/>')">
@@ -267,10 +322,18 @@
               <dl class="fsdocs-params">
                 <dt class="fsdocs-param">
                   <span class="fsdocs-param-name">
-                    db
+                    getStoredSymbols
                   </span>
                   :
-                  <code><a href="/TestPrune/reference/testprune-database-database.html">Database</a></code>
+                  <code><span>string&#32;->&#32;<span><a href="/TestPrune/reference/testprune-astanalyzer-symbolinfo.html">SymbolInfo</a>&#32;list</span></span></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    queryAffectedTests
+                  </span>
+                  :
+                  <code><span><span>string&#32;list</span>&#32;->&#32;<span><a href="/TestPrune/reference/testprune-astanalyzer-testmethodinfo.html">TestMethodInfo</a>&#32;list</span></span></code>
                 </dt>
                 <dd class="fsdocs-param-docs"></dd>
                 <dt class="fsdocs-param">
@@ -295,7 +358,7 @@
                   <span class="fsdocs-return-name">
                     Returns: 
                   </span>
-                  <code><a href="/TestPrune/reference/testprune-impactanalysis-testselection.html">TestSelection</a></code>
+                  <code><span><a href="/TestPrune/reference/testprune-impactanalysis-testselection.html">TestSelection</a>&#32;*&#32;<span><a href="/TestPrune/reference/testprune-domain-analysisevent.html">AnalysisEvent</a>&#32;list</span></span></code>
                 </dt>
                 <dd class="fsdocs-return-docs"></dd>
               </dl>

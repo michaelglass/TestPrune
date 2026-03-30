@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" data-root="/TestPrune/">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Michael Glass" name="author">
+    <!-- Opengraph properties (https://ogp.me/) -->
+    <meta property="og:site_name" content="TestPrune">
+    <meta property="og:title" content="Dead Code False Positives: Design
+" />
+    <meta property="og:url" content="/TestPrune/plans/2026-03-30-dead-code-false-positives-design.html">
+    <meta property="og:type" content="website" />
+    <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="/TestPrune/">
+    <meta name="twitter:title" content="Dead Code False Positives: Design
+">
+    
+    <title>Dead Code False Positives: Design
+ | TestPrune</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="/TestPrune/img/favicon.ico" rel="icon" sizes="32x32" type="image/png"/>
+    <script type="application/javascript" src="/TestPrune/content/fsdocs-theme-set-dark.js"></script>
+    <script type="application/javascript" src="/TestPrune/content/fsdocs-details-set-expanded.js"></script>
+    <link href="/TestPrune/content/fsdocs-default.css" rel="stylesheet" type="text/css"/>
+    <link href="/TestPrune/content/fsdocs-theme.css" rel="stylesheet" type="text/css"/>
+    
+    
+</head>
+<body class="content">
+<header>
+    <div class="start">
+        <div id="menu-toggle">
+            <iconify-icon class="icon closed" height="22" icon="eva:menu-fill" width="22"></iconify-icon>
+            <iconify-icon class="icon open" height="22" icon="mi:close" width="22"></iconify-icon>
+            <input type="checkbox" name="mobile-menu" />
+            <ul class="menu">
+                <li class="nav-header">Links</li>
+                <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/blob/master/LICENSE.md">License</a>
+                </li>
+                <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                        href="https://github.com/michaelglass/TestPrune/blob/master/RELEASE_NOTES.md">Release
+                    Notes</a></li>
+                <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/">Source
+                    Repository</a></li>
+                <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-design.html">
+    Dead Code False Positives: Design
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-plan.html">
+    Dead Code False Positives Implementation Plan
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-design.html">
+    TestPrune Re-Architecture: Functional Core, Imperative Shell
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-plan.html">
+    Functional Core, Imperative Shell — Implementation Plan
+
+  </a>
+</li>
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="/TestPrune/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+        <a href="https://github.com/michaelglass/TestPrune/">
+            <img alt="Header menu logo" src="/TestPrune/img/logo.png">
+            <strong>TestPrune</strong>
+        </a>
+    </div>
+    <div class="end">
+        <a href="https://github.com/michaelglass/TestPrune/" target="_blank">
+            <iconify-icon icon="uil:github" width="26" height="26"></iconify-icon>
+        </a>
+        <iconify-icon id="search-btn" icon="carbon:search" class="search" width="24" height="24"></iconify-icon>
+        <fsdocs-theme-toggle></fsdocs-theme-toggle>
+    </div>
+</header>
+<aside id="fsdocs-main-menu">
+    <ul class="menu">
+        <li class="nav-header">Links</li>
+        <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/blob/master/LICENSE.md">License</a>
+        </li>
+        <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                href="https://github.com/michaelglass/TestPrune/blob/master/RELEASE_NOTES.md">Release
+            Notes</a></li>
+        <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/">Source
+            Repository</a></li>
+        <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-design.html">
+    Dead Code False Positives: Design
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-plan.html">
+    Dead Code False Positives Implementation Plan
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-design.html">
+    TestPrune Re-Architecture: Functional Core, Imperative Shell
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-plan.html">
+    Functional Core, Imperative Shell — Implementation Plan
+
+  </a>
+</li>
+        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="/TestPrune/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+    </ul>
+</aside>
+<main>
+    <div id="content">
+        <h1><a name="Dead-Code-False-Positives-Design" class="anchor" href="#Dead-Code-False-Positives-Design">Dead Code False Positives: Design</a></h1>
+<h2><a name="Problem" class="anchor" href="#Problem">Problem</a></h2>
+<p><code>test-prune dead-code</code> reports ~108 potentially unreachable symbols on real projects, but only ~1 is genuinely dead. The dependency graph built by <code>AstAnalyzer.fs</code> is missing edges for several common F# patterns.</p>
+<h2><a name="Approach" class="anchor" href="#Approach">Approach</a></h2>
+<p>Two workstreams: add verbose diagnostics for observability, and fix the highest-impact missing edge patterns.</p>
+<h2><a name="1-Verbose-Diagnostics" class="anchor" href="#1-Verbose-Diagnostics">1. Verbose Diagnostics</a></h2>
+<p>Add <code>--verbose</code> flag to dead-code output. For each unreachable symbol, report WHY:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">type</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="rt">UnreachabilityReason</span> <span class="o">=</span>
+    <span class="pn">|</span> <span class="uc">NoIncomingEdges</span>
+    <span class="pn">|</span> <span class="uc">DisconnectedFromEntryPoints</span> <span class="k">of</span> <span class="prop">incomingFrom</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="rt">string</span> <span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="rt">list</span>
+</code></pre>
+<ul>
+<li><strong>NoIncomingEdges</strong>: No symbol in the graph depends on this one. Likely genuinely dead, or a missing edge.</li>
+<li><strong>DisconnectedFromEntryPoints</strong>: Has incoming edges but the chain doesn't reach any entry point. Missing edge is upstream.</li>
+</ul>
+<p>Implementation: In <code>DeadCode.fs</code>, query the DB for incoming edges to each unreachable symbol. Add reason to <code>DeadCodeResult.UnreachableSymbols</code> entries.</p>
+<h2><a name="2-Edge-Fixes-in-AstAnalyzer" class="anchor" href="#2-Edge-Fixes-in-AstAnalyzer">2. Edge Fixes in AstAnalyzer</a></h2>
+<h3><a name="2a-DU-parent-type-from-case-usage" class="anchor" href="#2a-DU-parent-type-from-case-usage">2a. DU parent type from case usage</a></h3>
+<p>When an <code>FSharpUnionCase</code> is used (pattern match or construction), also emit a <code>UsesType</code> edge to the parent DU type via <code>ReturnType.TypeDefinition</code>.</p>
+<h3><a name="2b-Generic-type-parameters" class="anchor" href="#2b-Generic-type-parameters">2b. Generic type parameters</a></h3>
+<p>When a symbol use involves a generic type instantiation, inspect the <code>FSharpType</code> for type arguments and emit <code>UsesType</code> edges to each concrete type argument's definition entity.</p>
+<h3><a name="2c-Record-type-from-field-usage" class="anchor" href="#2c-Record-type-from-field-usage">2c. Record type from field usage</a></h3>
+<p>When a record field is used (an <code>FSharpMemberOrFunctionOrValue</code> that's a property with a <code>DeclaringEntity</code> that <code>IsFSharpRecord</code>), emit an additional <code>UsesType</code> edge to the record type.</p>
+<h3><a name="2d-DllImport-exclusion" class="anchor" href="#2d-DllImport-exclusion">2d. DllImport exclusion</a></h3>
+<p>Exclude symbols with <code>[&lt;DllImport&gt;]</code> attribute from dead-code reporting rather than fixing edges. Add an <code>IsExtern</code> flag to <code>SymbolInfo</code> during indexing, filter in <code>DeadCode.fs</code>.</p>
+<h2><a name="3-Deferred" class="anchor" href="#3-Deferred">3. Deferred</a></h2>
+<ul>
+<li>Interface dispatch (interface method call -&gt; implementors): Hard, requires tracking all implementors. Verbose diagnostics will help investigate.</li>
+<li>Module binding attribution (#4 from TODO): Needs deeper investigation of closure naming.</li>
+</ul>
+<h2><a name="4-Test-Suite" class="anchor" href="#4-Test-Suite">4. Test Suite</a></h2>
+<h3><a name="AstAnalyzer-level-edge-extraction-from-real-F-source" class="anchor" href="#AstAnalyzer-level-edge-extraction-from-real-F-source">AstAnalyzer-level (edge extraction from real F# source)</a></h3>
+<ul>
+<li>Generic type params extracted as edges</li>
+<li>Multiple generic args each get edges</li>
+<li>Nested generics (e.g., <code>Option&lt;List&lt;MyType&gt;&gt;</code>)</li>
+<li>DU case usage creates edge to parent type</li>
+<li>Record field usage creates edge to record type</li>
+</ul>
+<h3><a name="Dead-code-integration-end-to-end-reachability" class="anchor" href="#Dead-code-integration-end-to-end-reachability">Dead-code integration (end-to-end reachability)</a></h3>
+<ul>
+<li>DU type reachable when only cases are used</li>
+<li>Record type reachable when only fields are used</li>
+<li>Generic type arg reachable through instantiation</li>
+<li>DllImport functions excluded</li>
+<li>Verbose: NoIncomingEdges vs DisconnectedFromEntryPoints</li>
+</ul>
+<h3><a name="Test-impact-changed-symbol-gt-affected-tests" class="anchor" href="#Test-impact-changed-symbol-gt-affected-tests">Test impact (changed symbol -&gt; affected tests)</a></h3>
+<ul>
+<li>1 changed symbol -&gt; 1 affected test</li>
+<li>1 changed symbol -&gt; 2 affected tests (shared dep)</li>
+<li>Generic type param changed -&gt; test using generic affected</li>
+<li>DU type changed -&gt; test pattern-matching cases affected</li>
+<li>Record type changed -&gt; test constructing records affected</li>
+</ul>
+<h2><a name="Validation" class="anchor" href="#Validation">Validation</a></h2>
+<p>Re-run against real project after each fix. Target: 108 false positives -&gt; &lt;10.</p>
+
+        <div class="fsdocs-tip" id="fs1">type UnreachabilityReason =
+  | NoIncomingEdges
+  | DisconnectedFromEntryPoints of incomingFrom: string list</div>
+<div class="fsdocs-tip" id="fs2">Multiple items<br />val string: value: &#39;T -&gt; string<br /><br />--------------------<br />type string = System.String</div>
+<div class="fsdocs-tip" id="fs3">type &#39;T list = List&lt;&#39;T&gt;</div>
+
+    </div>
+</main>
+<aside id="fsdocs-page-menu">
+    <p id="on-this-page">On this page</p>
+    <ul>
+  <li class="level-1">
+    <a href="#Dead-Code-False-Positives-Design">
+      Dead Code False Positives: Design
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Problem">
+      Problem
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Approach">
+      Approach
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#1-Verbose-Diagnostics">
+      1. Verbose Diagnostics
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#2-Edge-Fixes-in-AstAnalyzer">
+      2. Edge Fixes in AstAnalyzer
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#2a-DU-parent-type-from-case-usage">
+      2a. DU parent type from case usage
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#2b-Generic-type-parameters">
+      2b. Generic type parameters
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#2c-Record-type-from-field-usage">
+      2c. Record type from field usage
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#2d-DllImport-exclusion">
+      2d. DllImport exclusion
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#3-Deferred">
+      3. Deferred
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#4-Test-Suite">
+      4. Test Suite
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#AstAnalyzer-level-edge-extraction-from-real-F-source">
+      AstAnalyzer-level (edge extraction from real F# source)
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Dead-code-integration-end-to-end-reachability">
+      Dead-code integration (end-to-end reachability)
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Test-impact-changed-symbol-gt-affected-tests">
+      Test impact (changed symbol -&gt; affected tests)
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Validation">
+      Validation
+    </a>
+  </li>
+</ul>
+</aside>
+<dialog>
+    <input type="search" placeholder="Search docs" />
+    <div class="results">
+        <ul></ul>
+        <p class="empty">Type something to start searching.</p>
+    </div>
+</dialog>
+<script type="module" src="/TestPrune/content/fsdocs-tips.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-theme-toggle.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-details-toggle.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-theme.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-search.js"></script>
+
+</body>
+</html>
