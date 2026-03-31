@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" data-root="/TestPrune/">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Michael Glass" name="author">
+    <!-- Opengraph properties (https://ogp.me/) -->
+    <meta property="og:site_name" content="TestPrune">
+    <meta property="og:title" content="FSAC / Compiler Learnings for TestPrune
+" />
+    <meta property="og:url" content="/TestPrune/plans/fsac-learnings.html">
+    <meta property="og:type" content="website" />
+    <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="/TestPrune/">
+    <meta name="twitter:title" content="FSAC / Compiler Learnings for TestPrune
+">
+    
+    <title>FSAC / Compiler Learnings for TestPrune
+ | TestPrune</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="/TestPrune/img/favicon.ico" rel="icon" sizes="32x32" type="image/png"/>
+    <script type="application/javascript" src="/TestPrune/content/fsdocs-theme-set-dark.js"></script>
+    <script type="application/javascript" src="/TestPrune/content/fsdocs-details-set-expanded.js"></script>
+    <link href="/TestPrune/content/fsdocs-default.css" rel="stylesheet" type="text/css"/>
+    <link href="/TestPrune/content/fsdocs-theme.css" rel="stylesheet" type="text/css"/>
+    
+    
+</head>
+<body class="content">
+<header>
+    <div class="start">
+        <div id="menu-toggle">
+            <iconify-icon class="icon closed" height="22" icon="eva:menu-fill" width="22"></iconify-icon>
+            <iconify-icon class="icon open" height="22" icon="mi:close" width="22"></iconify-icon>
+            <input type="checkbox" name="mobile-menu" />
+            <ul class="menu">
+                <li class="nav-header">Links</li>
+                <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/blob/master/LICENSE.md">License</a>
+                </li>
+                <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                        href="https://github.com/michaelglass/TestPrune/blob/master/RELEASE_NOTES.md">Release
+                    Notes</a></li>
+                <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/">Source
+                    Repository</a></li>
+                <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-design.html">
+    Dead Code False Positives: Design
+
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="/TestPrune/plans/fsac-learnings.html">
+    FSAC / Compiler Learnings for TestPrune
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-fsac-tier1.html">
+    FSAC Tier 1 Improvements Implementation Plan
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-plan.html">
+    Dead Code False Positives Implementation Plan
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-fsac-tier1-design.html">
+    FSAC Tier 1 Improvements — Design
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-design.html">
+    TestPrune Re-Architecture: Functional Core, Imperative Shell
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-plan.html">
+    Functional Core, Imperative Shell — Implementation Plan
+
+  </a>
+</li>
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="/TestPrune/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+        <a href="https://github.com/michaelglass/TestPrune/">
+            <img alt="Header menu logo" src="/TestPrune/img/logo.png">
+            <strong>TestPrune</strong>
+        </a>
+    </div>
+    <div class="end">
+        <a href="https://github.com/michaelglass/TestPrune/" target="_blank">
+            <iconify-icon icon="uil:github" width="26" height="26"></iconify-icon>
+        </a>
+        <iconify-icon id="search-btn" icon="carbon:search" class="search" width="24" height="24"></iconify-icon>
+        <fsdocs-theme-toggle></fsdocs-theme-toggle>
+    </div>
+</header>
+<aside id="fsdocs-main-menu">
+    <ul class="menu">
+        <li class="nav-header">Links</li>
+        <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/blob/master/LICENSE.md">License</a>
+        </li>
+        <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                href="https://github.com/michaelglass/TestPrune/blob/master/RELEASE_NOTES.md">Release
+            Notes</a></li>
+        <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/">Source
+            Repository</a></li>
+        <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-design.html">
+    Dead Code False Positives: Design
+
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="/TestPrune/plans/fsac-learnings.html">
+    FSAC / Compiler Learnings for TestPrune
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-fsac-tier1.html">
+    FSAC Tier 1 Improvements Implementation Plan
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-plan.html">
+    Dead Code False Positives Implementation Plan
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-30-fsac-tier1-design.html">
+    FSAC Tier 1 Improvements — Design
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-design.html">
+    TestPrune Re-Architecture: Functional Core, Imperative Shell
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-plan.html">
+    Functional Core, Imperative Shell — Implementation Plan
+
+  </a>
+</li>
+        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="/TestPrune/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+    </ul>
+</aside>
+<main>
+    <div id="content">
+        <h1><a name="FSAC-Compiler-Learnings-for-TestPrune" class="anchor" href="#FSAC-Compiler-Learnings-for-TestPrune">FSAC / Compiler Learnings for TestPrune</a></h1>
+<p>Cross-reference with FsHotWatch's <code>docs/fsac-learnings.md</code>. Items already
+addressed in <code>TODO.md</code> (projectCacheSize, snapshot API, topo sort, caching,
+etc.) and items explicitly ruled out (<code>enablePartialTypeChecking</code>,
+parse-only, intra-project parallelism) are not repeated here.</p>
+<p>Scores: <strong>S</strong> Simpler · <strong>M</strong> Maintainable · <strong>R</strong> Result quality (<code>★★★/★★☆/★☆☆</code>)</p>
+<hr />
+<h2><a name="Tier-1-Quick-wins" class="anchor" href="#Tier-1-Quick-wins">Tier 1 — Quick wins</a></h2>
+<ul>
+<li>
+<p>[x] <strong>Script checking semaphore</strong> · Add <code>SemaphoreSlim(1,1)</code> to serialize
+concurrent <code>.fsx</code> checks. FSAC discovered FCS has internal state corruption
+under concurrent script processing. TestPrune already calls
+<code>GetProjectOptionsFromScript</code> for scripts — worth protecting.
+(<code>AstAnalyzer.fs:734</code>, FSAC <code>CompilerServiceInterface.fs:113-115</code>)
+<strong>S</strong> <code>+</code>  <strong>M</strong> <code>+</code>  <strong>R</strong> <code>★★★</code></p>
+</li>
+<li>
+<p>[x] <strong>Process timeout on the pre-index build step</strong> · The build that runs before
+indexing (<code>dotnet build</code>) has no timeout. A hung build blocks the CLI
+indefinitely. (<code>Orchestration.fs</code>, build invocation)
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>+</code>  <strong>R</strong> <code>★★★</code></p>
+</li>
+<li>
+<p>[ ] <strong>MSBuild lock: bounded retry, not infinite</strong> · <code>ProjectLoader.fs</code> retries
+MSBuild acquisition in an infinite <code>while true</code> loop with 50ms sleeps. Should
+have a timeout/retry limit and return an error. (<code>ProjectLoader.fs:17,55</code>)
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>++</code>  <strong>R</strong> <code>★★☆</code></p>
+</li>
+<li>
+<p>[ ] <strong><code>CancellationTokenSource.TryCancel()</code> / <code>TryDispose()</code></strong> · Adopt FSAC's
+extension methods that swallow <code>ObjectDisposedException</code> and
+<code>NullReferenceException</code> on cancellation. Defensive against races.
+(FSAC <code>AdaptiveExtensions.fs:19-32</code>)
+<strong>S</strong> <code>+</code>  <strong>M</strong> <code>++</code>  <strong>R</strong> <code>★☆☆</code></p>
+</li>
+<li>
+<p>[x] <strong>Process execution logging</strong> · Log command, args, working directory, and
+duration for build/test invocations. Build failures are opaque to diagnose
+in the current output.
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>++</code>  <strong>R</strong> <code>★★☆</code></p>
+</li>
+<li>
+<p>[x] <strong>Resolve relative paths to absolute before FCS</strong> · FSAC does this
+defensively because script compilation fails with relative paths. Apply the
+same pass over <code>SourceFiles</code> and <code>OtherOptions</code> before passing to
+<code>ParseAndCheckFileInProject</code>. (FSAC <code>CompilerServiceInterface.fs:207-215</code>)
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>+</code>  <strong>R</strong> <code>★★☆</code></p>
+</li>
+</ul>
+<hr />
+<h2><a name="Tier-2-Focused-sessions" class="anchor" href="#Tier-2-Focused-sessions">Tier 2 — Focused sessions</a></h2>
+<ul>
+<li>
+<p>[ ] <strong><code>Async.parallel75</code> for project tiers</strong> · The topo-sort produces dependency
+tiers. Projects at the same tier are currently processed sequentially.
+<code>Async.Parallel</code> with a <code>ProcessorCount * 0.75</code> cap would parallelize
+FCS analysis across independent projects. SQLite writes would still serialize
+(WAL allows one writer), but FCS work would overlap.
+Note from TODO.md: <code>getProjectOptions</code> serializes via MSBuild lock, but FCS
+analysis after options load can overlap.
+(FSAC <code>Utils.fs:243-247</code>)
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>+</code>  <strong>R</strong> <code>★★★</code></p>
+</li>
+<li>
+<p>[ ] <strong>Track <code>packages.lock.json</code> and <code>obj/*.props</code> for project invalidation</strong> ·
+The project-key hash currently covers source file paths/sizes/mtimes.
+NuGet restore changes and SDK props changes (which alter <code>OtherOptions</code>) are
+not detected, causing stale project options until the next full reindex.
+(FSAC <code>AdaptiveServerState.fs:1063-1086</code>)
+<strong>S</strong> <code>-</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★★☆</code></p>
+</li>
+<li>
+<p>[ ] <strong>Separate stdout and stderr from build/test processes</strong> · Currently merged.
+Separating them lets the caller distinguish structured output (test results,
+error codes) from log noise.
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>+</code>  <strong>R</strong> <code>★★☆</code></p>
+</li>
+<li>
+<p>[ ] <strong>FSharp.Core / FSI path fixup in project options</strong> · FSAC explicitly
+replaces <code>FSharp.Core.dll</code> and <code>FSharp.Compiler.Interactive.Settings.dll</code>
+paths in project options with SDK-discovered paths. Avoids version mismatches
+on non-standard SDK configurations.
+(FSAC <code>CompilerServiceInterface.fs:143-182</code>)
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★★☆</code></p>
+</li>
+</ul>
+<hr />
+<h2><a name="Tier-3-Experiments" class="anchor" href="#Tier-3-Experiments">Tier 3 — Experiments</a></h2>
+<ul>
+<li>
+<p>[ ] <strong>(experiment)</strong> <strong><code>WorkspaceLoaderViaProjectGraph</code></strong> · Uses MSBuild's static
+graph evaluation. Faster for multi-project solutions because it avoids
+sequential design-time builds. TestPrune's sequential MSBuild lock is a
+known bottleneck for large solutions — worth measuring.
+(FSAC <code>Parser.fs:126</code>)
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★★☆</code> <em>(if experiment succeeds)</em></p>
+</li>
+<li>
+<p>[ ] <strong>(experiment)</strong> <strong><code>useTransparentCompiler = true</code></strong> · FCS's newer incremental
+compiler; FSAC tests both modes in CI. Requires <code>FSharpProjectSnapshot</code> API
+(TestPrune already has <code>createProjectSnapshot</code> in AstAnalyzer.fs, so the
+infrastructure is partially there). Measure indexing time vs BackgroundCompiler.
+(<code>AstAnalyzer.fs</code>, FSAC <code>CompilerServiceInterface.fs:91-109</code>)
+<strong>S</strong> <code>-</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★★★</code> <em>(if experiment succeeds)</em></p>
+</li>
+<li>
+<p>[ ] <strong>(experiment)</strong> <strong><code>keepAllBackgroundSymbolUses = true</code></strong> · FSAC enables this
+for find-all-references. TestPrune uses <code>GetAllUsesOfAllSymbolsInFile</code> which
+operates on per-file check results, so this may not affect correctness. Worth
+enabling and checking whether symbol resolution completeness improves (more
+complete call graph = fewer false negatives in test selection).
+(<code>Orchestration.fs:98-104</code>)
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★★☆</code> <em>(if experiment shows improvement)</em></p>
+</li>
+<li>
+<p>[ ] <strong>(experiment)</strong> <strong><code>captureIdentifiersWhenParsing = true</code></strong> · Makes identifier
+captures available from parse results without a full check. Could potentially
+speed up definition-name extraction in AstAnalyzer, or allow a fast pre-pass
+to detect whether a file's definitions have changed before committing to a
+full check.
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★☆☆</code> <em>(investigate applicability)</em></p>
+</li>
+<li>
+<p>[ ] <strong>Dual-mode CI: BackgroundCompiler + TransparentCompiler</strong> · Run tests against
+both FCS compiler modes (as FSAC does). Catches regressions introduced by FCS
+upgrades before users hit them.
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>++</code>  <strong>R</strong> <code>★☆☆</code></p>
+</li>
+<li>
+<p>[ ] <strong>Indexing benchmarks</strong> · Add a benchmark measuring cold and warm index time,
+symbol count, and cache hit rate on a representative multi-project solution.
+Required before the TransparentCompiler and WorkspaceLoaderViaProjectGraph
+experiments produce meaningful numbers.
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>++</code>  <strong>R</strong> <code>★☆☆</code></p>
+</li>
+</ul>
+<hr />
+<h2><a name="Notes-on-items-from-FsHotWatch-s-list-that-do-NOT-apply-here" class="anchor" href="#Notes-on-items-from-FsHotWatch-s-list-that-do-NOT-apply-here">Notes on items from FsHotWatch's list that do NOT apply here</a></h2>
+<ul>
+<li>
+*<em><code>keepAssemblyContents</code> conditional on hasAnalyzers*</em> — TestPrune always needs
+assembly contents for <code>GetAllUsesOfAllSymbolsInFile</code>. Cannot be made conditional.
+</li>
+<li>
+*<em><code>enablePartialTypeChecking</code>*</em> — explicitly ruled out in TODO.md (mutually
+exclusive with <code>keepAssemblyContents</code>).
+</li>
+<li>
+<strong>File-level dependency tracking</strong> — TestPrune already implements this via
+<code>firstChangedIndex</code> in Orchestration.fs.
+</li>
+<li><strong>Script project options via <code>GetProjectOptionsFromScript</code></strong> — already done.</li>
+<li>
+<strong>Sliding cache expiration / WeakReference in cache</strong> — TestPrune is a CLI tool,
+not a long-running daemon. Memory pressure between runs is not a concern.
+</li>
+<li>*<em><code>suggestNamesForErrors</code>*</em> — TestPrune doesn't surface FCS diagnostics to users.</li>
+</ul>
+
+        
+    </div>
+</main>
+<aside id="fsdocs-page-menu">
+    <p id="on-this-page">On this page</p>
+    <ul>
+  <li class="level-1">
+    <a href="#FSAC-Compiler-Learnings-for-TestPrune">
+      FSAC / Compiler Learnings for TestPrune
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Tier-1-Quick-wins">
+      Tier 1 — Quick wins
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Tier-2-Focused-sessions">
+      Tier 2 — Focused sessions
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Tier-3-Experiments">
+      Tier 3 — Experiments
+    </a>
+  </li>
+  <li class="level-2">
+    <a href="#Notes-on-items-from-FsHotWatch-s-list-that-do-NOT-apply-here">
+      Notes on items from FsHotWatch's list that do NOT apply here
+    </a>
+  </li>
+</ul>
+</aside>
+<dialog>
+    <input type="search" placeholder="Search docs" />
+    <div class="results">
+        <ul></ul>
+        <p class="empty">Type something to start searching.</p>
+    </div>
+</dialog>
+<script type="module" src="/TestPrune/content/fsdocs-tips.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-theme-toggle.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-details-toggle.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-theme.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-search.js"></script>
+
+</body>
+</html>
