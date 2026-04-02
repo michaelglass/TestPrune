@@ -50,45 +50,9 @@
                 <li class="nav-header">
   Documentation
 </li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-design.html">
-    Dead Code False Positives: Design
-
-  </a>
-</li>             
 <li class="nav-item active">
   <a class="nav-link" href="/TestPrune/plans/fsac-learnings.html">
     FSAC / Compiler Learnings for TestPrune
-
-  </a>
-</li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-30-fsac-tier1.html">
-    FSAC Tier 1 Improvements Implementation Plan
-
-  </a>
-</li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-plan.html">
-    Dead Code False Positives Implementation Plan
-
-  </a>
-</li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-30-fsac-tier1-design.html">
-    FSAC Tier 1 Improvements — Design
-
-  </a>
-</li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-design.html">
-    TestPrune Re-Architecture: Functional Core, Imperative Shell
-
-  </a>
-</li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-plan.html">
-    Functional Core, Imperative Shell — Implementation Plan
 
   </a>
 </li>
@@ -128,45 +92,9 @@
         <li class="nav-header">
   Documentation
 </li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-design.html">
-    Dead Code False Positives: Design
-
-  </a>
-</li>             
 <li class="nav-item active">
   <a class="nav-link" href="/TestPrune/plans/fsac-learnings.html">
     FSAC / Compiler Learnings for TestPrune
-
-  </a>
-</li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-30-fsac-tier1.html">
-    FSAC Tier 1 Improvements Implementation Plan
-
-  </a>
-</li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-30-dead-code-false-positives-plan.html">
-    Dead Code False Positives Implementation Plan
-
-  </a>
-</li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-30-fsac-tier1-design.html">
-    FSAC Tier 1 Improvements — Design
-
-  </a>
-</li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-design.html">
-    TestPrune Re-Architecture: Functional Core, Imperative Shell
-
-  </a>
-</li>             
-<li class="nav-item ">
-  <a class="nav-link" href="/TestPrune/plans/2026-03-29-functional-core-plan.html">
-    Functional Core, Imperative Shell — Implementation Plan
 
   </a>
 </li>
@@ -184,9 +112,12 @@
     <div id="content">
         <h1><a name="FSAC-Compiler-Learnings-for-TestPrune" class="anchor" href="#FSAC-Compiler-Learnings-for-TestPrune">FSAC / Compiler Learnings for TestPrune</a></h1>
 <p>Cross-reference with FsHotWatch's <code>docs/fsac-learnings.md</code>. Items already
-addressed in <code>TODO.md</code> (projectCacheSize, snapshot API, topo sort, caching,
-etc.) and items explicitly ruled out (<code>enablePartialTypeChecking</code>,
-parse-only, intra-project parallelism) are not repeated here.</p>
+shipped (projectCacheSize, snapshot API, topo sort, caching, etc.) and
+items explicitly ruled out (<code>enablePartialTypeChecking</code>, parse-only,
+intra-project parallelism) are not repeated here.</p>
+<p>Primary use case: TestPrune.Core as a library consumed by a long-running
+daemon holding a hot FCS instance. Priorities reflect daemon resilience,
+cancellation safety, and incremental re-analysis over CLI ergonomics.</p>
 <p>Scores: <strong>S</strong> Simpler · <strong>M</strong> Maintainable · <strong>R</strong> Result quality (<code>★★★/★★☆/★☆☆</code>)</p>
 <hr />
 <h2><a name="Tier-1-Quick-wins" class="anchor" href="#Tier-1-Quick-wins">Tier 1 — Quick wins</a></h2>
@@ -206,19 +137,6 @@ indefinitely. (<code>Orchestration.fs</code>, build invocation)
 <strong>S</strong> <code>0</code>  <strong>M</strong> <code>+</code>  <strong>R</strong> <code>★★★</code></p>
 </li>
 <li>
-<p>[ ] <strong>MSBuild lock: bounded retry, not infinite</strong> · <code>ProjectLoader.fs</code> retries
-MSBuild acquisition in an infinite <code>while true</code> loop with 50ms sleeps. Should
-have a timeout/retry limit and return an error. (<code>ProjectLoader.fs:17,55</code>)
-<strong>S</strong> <code>0</code>  <strong>M</strong> <code>++</code>  <strong>R</strong> <code>★★☆</code></p>
-</li>
-<li>
-<p>[ ] <strong><code>CancellationTokenSource.TryCancel()</code> / <code>TryDispose()</code></strong> · Adopt FSAC's
-extension methods that swallow <code>ObjectDisposedException</code> and
-<code>NullReferenceException</code> on cancellation. Defensive against races.
-(FSAC <code>AdaptiveExtensions.fs:19-32</code>)
-<strong>S</strong> <code>+</code>  <strong>M</strong> <code>++</code>  <strong>R</strong> <code>★☆☆</code></p>
-</li>
-<li>
 <p>[x] <strong>Process execution logging</strong> · Log command, args, working directory, and
 duration for build/test invocations. Build failures are opaque to diagnose
 in the current output.
@@ -231,69 +149,66 @@ same pass over <code>SourceFiles</code> and <code>OtherOptions</code> before pas
 <code>ParseAndCheckFileInProject</code>. (FSAC <code>CompilerServiceInterface.fs:207-215</code>)
 <strong>S</strong> <code>0</code>  <strong>M</strong> <code>+</code>  <strong>R</strong> <code>★★☆</code></p>
 </li>
+<li>
+<p>[x] ~~<strong><code>CancellationTokenSource.TryCancel()</code> / <code>TryDispose()</code></strong>~~ · Skipped —
+FsHotWatch (primary consumer) already has a local <code>cancelAndDispose</code> helper
+in CheckPipeline.fs. No value duplicating it in Core when the consumer owns
+CTS lifecycle.</p>
+</li>
+<li>
+<p>[x] ~~<strong>MSBuild lock: bounded retry, not infinite</strong>~~ · Dropped — the infinite
+retry is inside Ionide.ProjInfo's <code>WorkspaceLoader</code>, not our code. Our
+<code>ProjectLoader.fs</code> uses a simple <code>lock msbuildLock</code> monitor. Can't fix
+upstream behavior from here.</p>
+</li>
 </ul>
 <hr />
 <h2><a name="Tier-2-Focused-sessions" class="anchor" href="#Tier-2-Focused-sessions">Tier 2 — Focused sessions</a></h2>
 <ul>
 <li>
-<p>[ ] <strong><code>Async.parallel75</code> for project tiers</strong> · The topo-sort produces dependency
-tiers. Projects at the same tier are currently processed sequentially.
-<code>Async.Parallel</code> with a <code>ProcessorCount * 0.75</code> cap would parallelize
-FCS analysis across independent projects. SQLite writes would still serialize
-(WAL allows one writer), but FCS work would overlap.
-Note from TODO.md: <code>getProjectOptions</code> serializes via MSBuild lock, but FCS
-analysis after options load can overlap.
-(FSAC <code>Utils.fs:243-247</code>)
-<strong>S</strong> <code>0</code>  <strong>M</strong> <code>+</code>  <strong>R</strong> <code>★★★</code></p>
+<p>[x] <strong><code>Async.parallel75</code> for project tiers</strong> · Already implemented.
+<code>Orchestration.fs:369</code> uses <code>Async.Parallel(tasks, maxDegreeOfParallelism = parallelism)</code>
+with a <code>--parallelism</code> CLI flag (default: <code>ProcessorCount</code>).</p>
 </li>
 <li>
-<p>[ ] <strong>Track <code>packages.lock.json</code> and <code>obj/*.props</code> for project invalidation</strong> ·
-The project-key hash currently covers source file paths/sizes/mtimes.
-NuGet restore changes and SDK props changes (which alter <code>OtherOptions</code>) are
-not detected, causing stale project options until the next full reindex.
-(FSAC <code>AdaptiveServerState.fs:1063-1086</code>)
-<strong>S</strong> <code>-</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★★☆</code></p>
+<p>[x] ~~<strong>Track <code>packages.lock.json</code> and <code>obj/*.props</code> for project invalidation</strong>~~ ·
+Dropped — file-change invalidation belongs in the daemon (FsHotWatch), not
+in Core. Tracking <code>obj/</code> causes infinite loops (build writes trigger
+reindexing). <code>.fsproj</code> changes are already detected by existing invalidation.</p>
 </li>
 <li>
-<p>[ ] <strong>Separate stdout and stderr from build/test processes</strong> · Currently merged.
-Separating them lets the caller distinguish structured output (test results,
-error codes) from log noise.
+<p>[x] <strong>Separate stdout and stderr from build/test processes</strong> · <code>TestResult</code>
+now has <code>Stdout</code> and <code>Stderr</code> fields. Callers print stdout to stdout and
+stderr to stderr. Build runner already handled them separately.
 <strong>S</strong> <code>0</code>  <strong>M</strong> <code>+</code>  <strong>R</strong> <code>★★☆</code></p>
-</li>
-<li>
-<p>[ ] <strong>FSharp.Core / FSI path fixup in project options</strong> · FSAC explicitly
-replaces <code>FSharp.Core.dll</code> and <code>FSharp.Compiler.Interactive.Settings.dll</code>
-paths in project options with SDK-discovered paths. Avoids version mismatches
-on non-standard SDK configurations.
-(FSAC <code>CompilerServiceInterface.fs:143-182</code>)
-<strong>S</strong> <code>0</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★★☆</code></p>
 </li>
 </ul>
 <hr />
 <h2><a name="Tier-3-Experiments" class="anchor" href="#Tier-3-Experiments">Tier 3 — Experiments</a></h2>
 <ul>
 <li>
-<p>[ ] <strong>(experiment)</strong> <strong><code>WorkspaceLoaderViaProjectGraph</code></strong> · Uses MSBuild's static
-graph evaluation. Faster for multi-project solutions because it avoids
-sequential design-time builds. TestPrune's sequential MSBuild lock is a
-known bottleneck for large solutions — worth measuring.
-(FSAC <code>Parser.fs:126</code>)
-<strong>S</strong> <code>0</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★★☆</code> <em>(if experiment succeeds)</em></p>
+<p>[ ] <strong>Indexing benchmarks</strong> · Add a benchmark measuring cold and warm index time,
+symbol count, and cache hit rate on a representative multi-project solution.
+Required before the TransparentCompiler and WorkspaceLoaderViaProjectGraph
+experiments produce meaningful numbers. <strong>Do this first.</strong>
+<strong>S</strong> <code>0</code>  <strong>M</strong> <code>++</code>  <strong>R</strong> <code>★★☆</code></p>
 </li>
 <li>
 <p>[ ] <strong>(experiment)</strong> <strong><code>useTransparentCompiler = true</code></strong> · FCS's newer incremental
 compiler; FSAC tests both modes in CI. Requires <code>FSharpProjectSnapshot</code> API
 (TestPrune already has <code>createProjectSnapshot</code> in AstAnalyzer.fs, so the
-infrastructure is partially there). Measure indexing time vs BackgroundCompiler.
+infrastructure is partially there). Designed for exactly the hot-FCS daemon
+use case — incremental recompilation with a warm compiler. Measure indexing
+time vs BackgroundCompiler.
 (<code>AstAnalyzer.fs</code>, FSAC <code>CompilerServiceInterface.fs:91-109</code>)
 <strong>S</strong> <code>-</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★★★</code> <em>(if experiment succeeds)</em></p>
 </li>
 <li>
 <p>[ ] <strong>(experiment)</strong> <strong><code>keepAllBackgroundSymbolUses = true</code></strong> · FSAC enables this
 for find-all-references. TestPrune uses <code>GetAllUsesOfAllSymbolsInFile</code> which
-operates on per-file check results, so this may not affect correctness. Worth
-enabling and checking whether symbol resolution completeness improves (more
-complete call graph = fewer false negatives in test selection).
+operates on per-file check results, so this may not affect correctness. With
+a hot FCS, background symbol uses accumulate across checks — enabling this
+could improve graph completeness for incremental re-analysis.
 (<code>Orchestration.fs:98-104</code>)
 <strong>S</strong> <code>0</code>  <strong>M</strong> <code>0</code>  <strong>R</strong> <code>★★☆</code> <em>(if experiment shows improvement)</em></p>
 </li>
@@ -311,35 +226,42 @@ both FCS compiler modes (as FSAC does). Catches regressions introduced by FCS
 upgrades before users hit them.
 <strong>S</strong> <code>0</code>  <strong>M</strong> <code>++</code>  <strong>R</strong> <code>★☆☆</code></p>
 </li>
-<li>
-<p>[ ] <strong>Indexing benchmarks</strong> · Add a benchmark measuring cold and warm index time,
-symbol count, and cache hit rate on a representative multi-project solution.
-Required before the TransparentCompiler and WorkspaceLoaderViaProjectGraph
-experiments produce meaningful numbers.
-<strong>S</strong> <code>0</code>  <strong>M</strong> <code>++</code>  <strong>R</strong> <code>★☆☆</code></p>
-</li>
 </ul>
 <hr />
-<h2><a name="Notes-on-items-from-FsHotWatch-s-list-that-do-NOT-apply-here" class="anchor" href="#Notes-on-items-from-FsHotWatch-s-list-that-do-NOT-apply-here">Notes on items from FsHotWatch's list that do NOT apply here</a></h2>
+<h2><a name="Deprioritized-Not-applicable" class="anchor" href="#Deprioritized-Not-applicable">Deprioritized / Not applicable</a></h2>
 <ul>
 <li>
-*<em><code>keepAssemblyContents</code> conditional on hasAnalyzers*</em> — TestPrune always needs
-assembly contents for <code>GetAllUsesOfAllSymbolsInFile</code>. Cannot be made conditional.
+<p><strong>FSharp.Core / FSI path fixup in project options</strong> — FSAC explicitly replaces
+<code>FSharp.Core.dll</code> and <code>FSharp.Compiler.Interactive.Settings.dll</code> paths in project
+options with SDK-discovered paths. Edge case for non-standard SDK configurations.
+Low priority; revisit if users report issues.
+(FSAC <code>CompilerServiceInterface.fs:143-182</code>)</p>
 </li>
 <li>
-*<em><code>enablePartialTypeChecking</code>*</em> — explicitly ruled out in TODO.md (mutually
-exclusive with <code>keepAssemblyContents</code>).
+<p>*<em><code>WorkspaceLoaderViaProjectGraph</code>*</em> — Uses MSBuild's static graph evaluation.
+Faster for multi-project solutions. However, the bottleneck in TestPrune's MSBuild
+path is inside Ionide.ProjInfo, not in our code. Revisit if Ionide adds support
+or if we replace the project loader.
+(FSAC <code>Parser.fs:126</code>)</p>
 </li>
 <li>
-<strong>File-level dependency tracking</strong> — TestPrune already implements this via
-<code>firstChangedIndex</code> in Orchestration.fs.
+<p>*<em><code>keepAssemblyContents</code> conditional on hasAnalyzers*</em> — TestPrune always needs
+assembly contents for <code>GetAllUsesOfAllSymbolsInFile</code>. Cannot be made conditional.</p>
 </li>
-<li><strong>Script project options via <code>GetProjectOptionsFromScript</code></strong> — already done.</li>
 <li>
-<strong>Sliding cache expiration / WeakReference in cache</strong> — TestPrune is a CLI tool,
-not a long-running daemon. Memory pressure between runs is not a concern.
+<p>*<em><code>enablePartialTypeChecking</code>*</em> — explicitly ruled out (mutually exclusive with
+<code>keepAssemblyContents</code>).</p>
 </li>
-<li>*<em><code>suggestNamesForErrors</code>*</em> — TestPrune doesn't surface FCS diagnostics to users.</li>
+<li>
+<p><strong>File-level dependency tracking</strong> — TestPrune already implements this via
+<code>firstChangedIndex</code> in Orchestration.fs.</p>
+</li>
+<li><p><strong>Script project options via <code>GetProjectOptionsFromScript</code></strong> — already done.</p></li>
+<li>
+<p><strong>Sliding cache expiration / WeakReference in cache</strong> — memory pressure is managed
+by the daemon process, not TestPrune.Core. Not our concern.</p>
+</li>
+<li><p>*<em><code>suggestNamesForErrors</code>*</em> — TestPrune doesn't surface FCS diagnostics to users.</p></li>
 </ul>
 
         
@@ -369,8 +291,8 @@ not a long-running daemon. Memory pressure between runs is not a concern.
     </a>
   </li>
   <li class="level-2">
-    <a href="#Notes-on-items-from-FsHotWatch-s-list-that-do-NOT-apply-here">
-      Notes on items from FsHotWatch's list that do NOT apply here
+    <a href="#Deprioritized-Not-applicable">
+      Deprioritized / Not applicable
     </a>
   </li>
 </ul>
