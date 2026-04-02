@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en" data-root="/TestPrune/">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Michael Glass" name="author">
+    <!-- Opengraph properties (https://ogp.me/) -->
+    <meta property="og:site_name" content="TestPrune">
+    <meta property="og:title" content="Indexing Benchmarks Implementation Plan
+" />
+    <meta property="og:url" content="/TestPrune/plans/2026-04-02-indexing-benchmarks.html">
+    <meta property="og:type" content="website" />
+    <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="/TestPrune/">
+    <meta name="twitter:title" content="Indexing Benchmarks Implementation Plan
+">
+    
+    <title>Indexing Benchmarks Implementation Plan
+ | TestPrune</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="/TestPrune/img/favicon.ico" rel="icon" sizes="32x32" type="image/png"/>
+    <script type="application/javascript" src="/TestPrune/content/fsdocs-theme-set-dark.js"></script>
+    <script type="application/javascript" src="/TestPrune/content/fsdocs-details-set-expanded.js"></script>
+    <link href="/TestPrune/content/fsdocs-default.css" rel="stylesheet" type="text/css"/>
+    <link href="/TestPrune/content/fsdocs-theme.css" rel="stylesheet" type="text/css"/>
+    
+    
+</head>
+<body class="content">
+<header>
+    <div class="start">
+        <div id="menu-toggle">
+            <iconify-icon class="icon closed" height="22" icon="eva:menu-fill" width="22"></iconify-icon>
+            <iconify-icon class="icon open" height="22" icon="mi:close" width="22"></iconify-icon>
+            <input type="checkbox" name="mobile-menu" />
+            <ul class="menu">
+                <li class="nav-header">Links</li>
+                <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/blob/master/LICENSE.md">License</a>
+                </li>
+                <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                        href="https://github.com/michaelglass/TestPrune/blob/master/RELEASE_NOTES.md">Release
+                    Notes</a></li>
+                <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/">Source
+                    Repository</a></li>
+                <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-04-02-indexing-benchmarks-design.html">
+    Indexing Benchmarks Design
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/fsac-learnings.html">
+    FSAC / Compiler Learnings for TestPrune
+
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="/TestPrune/plans/2026-04-02-indexing-benchmarks.html">
+    Indexing Benchmarks Implementation Plan
+
+  </a>
+</li>
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="/TestPrune/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+        <a href="https://github.com/michaelglass/TestPrune/">
+            <img alt="Header menu logo" src="/TestPrune/img/logo.png">
+            <strong>TestPrune</strong>
+        </a>
+    </div>
+    <div class="end">
+        <a href="https://github.com/michaelglass/TestPrune/" target="_blank">
+            <iconify-icon icon="uil:github" width="26" height="26"></iconify-icon>
+        </a>
+        <iconify-icon id="search-btn" icon="carbon:search" class="search" width="24" height="24"></iconify-icon>
+        <fsdocs-theme-toggle></fsdocs-theme-toggle>
+    </div>
+</header>
+<aside id="fsdocs-main-menu">
+    <ul class="menu">
+        <li class="nav-header">Links</li>
+        <li class="license-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/blob/master/LICENSE.md">License</a>
+        </li>
+        <li class="release-notes-menu-item builtin-menu-item nav-item"><a class="nav-link"
+                                href="https://github.com/michaelglass/TestPrune/blob/master/RELEASE_NOTES.md">Release
+            Notes</a></li>
+        <li class="repository-menu-item builtin-menu-item nav-item"><a class="nav-link" href="https://github.com/michaelglass/TestPrune/">Source
+            Repository</a></li>
+        <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/2026-04-02-indexing-benchmarks-design.html">
+    Indexing Benchmarks Design
+
+  </a>
+</li>             
+<li class="nav-item ">
+  <a class="nav-link" href="/TestPrune/plans/fsac-learnings.html">
+    FSAC / Compiler Learnings for TestPrune
+
+  </a>
+</li>             
+<li class="nav-item active">
+  <a class="nav-link" href="/TestPrune/plans/2026-04-02-indexing-benchmarks.html">
+    Indexing Benchmarks Implementation Plan
+
+  </a>
+</li>
+        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="/TestPrune/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+    </ul>
+</aside>
+<main>
+    <div id="content">
+        <h1><a name="Indexing-Benchmarks-Implementation-Plan" class="anchor" href="#Indexing-Benchmarks-Implementation-Plan">Indexing Benchmarks Implementation Plan</a></h1>
+<blockquote>
+<p><strong>For Claude:</strong> REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.</p>
+</blockquote>
+<p><strong>Goal:</strong> Add a benchmark project that runs cold + warm indexing on SampleSolution, emits JSON metrics, and integrates with <code>dotnet-trace</code>/speedscope for flame graph profiling.</p>
+<p><strong>Architecture:</strong> Standalone console app in <code>benchmarks/TestPrune.Benchmarks/</code> that calls <code>Orchestration.runIndexWith</code> directly, reusing the same dependency injection pattern as <code>Program.fs</code>. Profiling is external via <code>dotnet-trace collect --format speedscope</code>.</p>
+<p><strong>Tech Stack:</strong> F# console app, <code>dotnet-trace</code>, speedscope, mise tasks</p>
+<hr />
+<h3><a name="Task-1-Create-the-benchmark-project-and-add-to-solution" class="anchor" href="#Task-1-Create-the-benchmark-project-and-add-to-solution">Task 1: Create the benchmark project and add to solution</a></h3>
+<p><strong>Files:</strong>
+- Create: <code>benchmarks/TestPrune.Benchmarks/TestPrune.Benchmarks.fsproj</code>
+- Create: <code>benchmarks/TestPrune.Benchmarks/Program.fs</code>
+- Modify: <code>TestPrune.slnx</code></p>
+<p><strong>Step 1: Create the project file</strong></p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip highlighted"><code lang="xml"><span class="k">&lt;</span><span class="i">Project</span> <span class="o">Sdk</span><span class="k">="Microsoft.NET.Sdk"</span><span class="k">&gt;</span>
+
+    <span class="k">&lt;</span><span class="i">PropertyGroup</span><span class="k">&gt;</span>
+        <span class="k">&lt;</span><span class="i">TargetFramework</span><span class="k">&gt;</span>net10.0<span class="k">&lt;/</span><span class="i">TargetFramework</span><span class="k">&gt;</span>
+        <span class="k">&lt;</span><span class="i">OutputType</span><span class="k">&gt;</span>Exe<span class="k">&lt;/</span><span class="i">OutputType</span><span class="k">&gt;</span>
+        <span class="k">&lt;</span><span class="i">NoWarn</span><span class="k">&gt;</span>$(NoWarn);NU1605;MSB3277;NETSDK1188<span class="k">&lt;/</span><span class="i">NoWarn</span><span class="k">&gt;</span>
+        <span class="k">&lt;</span><span class="i">IsPackable</span><span class="k">&gt;</span>false<span class="k">&lt;/</span><span class="i">IsPackable</span><span class="k">&gt;</span>
+    <span class="k">&lt;/</span><span class="i">PropertyGroup</span><span class="k">&gt;</span>
+
+    <span class="k">&lt;</span><span class="i">ItemGroup</span><span class="k">&gt;</span>
+        <span class="k">&lt;</span><span class="i">Compile</span> <span class="o">Include</span><span class="k">="Program.fs"</span> <span class="k">/&gt;</span>
+    <span class="k">&lt;/</span><span class="i">ItemGroup</span><span class="k">&gt;</span>
+
+    <span class="k">&lt;</span><span class="i">ItemGroup</span><span class="k">&gt;</span>
+        <span class="k">&lt;</span><span class="i">ProjectReference</span> <span class="o">Include</span><span class="k">="../../src/TestPrune/TestPrune.fsproj"</span> <span class="k">/&gt;</span>
+    <span class="k">&lt;/</span><span class="i">ItemGroup</span><span class="k">&gt;</span>
+
+    <span class="k">&lt;</span><span class="i">ItemGroup</span><span class="k">&gt;</span>
+        <span class="k">&lt;</span><span class="i">PackageReference</span> <span class="o">Update</span><span class="k">="FSharp.Core"</span> <span class="o">Version</span><span class="k">="10.1.*"</span> <span class="k">/&gt;</span>
+    <span class="k">&lt;/</span><span class="i">ItemGroup</span><span class="k">&gt;</span>
+
+<span class="k">&lt;/</span><span class="i">Project</span><span class="k">&gt;</span>
+</code></pre></td></tr></table>
+<p>References <code>TestPrune</code> (the CLI project) which transitively includes <code>TestPrune.Core</code>. This gives access to <code>Orchestration.runIndexWith</code>, <code>createChecker</code>, <code>dotnetBuildRunner</code>, <code>getProjectOptions</code>, and <code>createNoopSink</code>.</p>
+<p><strong>Step 2: Create a minimal Program.fs that compiles</strong></p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">module</span> <span class="id">TestPrune</span><span class="pn">.</span><span class="id">Benchmarks</span><span class="pn">.</span><span class="id">Program</span>
+
+<span class="pn">[&lt;</span><span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="id">EntryPoint</span><span class="pn">&gt;]</span>
+<span class="k">let</span> <span class="id">main</span> <span class="id">_argv</span> <span class="o">=</span>
+    <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="id">printfn</span> <span class="s">&quot;TODO: benchmark&quot;</span>
+    <span class="n">0</span>
+</code></pre>
+<p><strong>Step 3: Add to the solution</strong></p>
+<p>In <code>TestPrune.slnx</code>, add a benchmarks folder:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip highlighted"><code lang="xml"><span class="k">&lt;</span><span class="i">Folder</span> <span class="o">Name</span><span class="k">="/benchmarks/"</span><span class="k">&gt;</span>
+  <span class="k">&lt;</span><span class="i">Project</span> <span class="o">Path</span><span class="k">="benchmarks/TestPrune.Benchmarks/TestPrune.Benchmarks.fsproj"</span> <span class="k">/&gt;</span>
+<span class="k">&lt;/</span><span class="i">Folder</span><span class="k">&gt;</span>
+</code></pre></td></tr></table>
+<p><strong>Step 4: Verify it builds</strong></p>
+<p>Run: <code>dotnet build benchmarks/TestPrune.Benchmarks</code>
+Expected: Build succeeded</p>
+<p><strong>Step 5: Commit</strong></p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">Add</span> <span class="id">benchmark</span> <span class="id">project</span> <span class="id">skeleton</span>
+</code></pre>
+<hr />
+<h3><a name="Task-2-Implement-cold-warm-index-benchmark" class="anchor" href="#Task-2-Implement-cold-warm-index-benchmark">Task 2: Implement cold + warm index benchmark</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>benchmarks/TestPrune.Benchmarks/Program.fs</code></p>
+<p><strong>Step 1: Write the benchmark runner</strong></p>
+<p>Replace <code>Program.fs</code> with:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">module</span> <span class="id">TestPrune</span><span class="pn">.</span><span class="id">Benchmarks</span><span class="pn">.</span><span class="id">Program</span>
+
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="id">System</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs3', 4)" onmouseover="showTip(event, 'fs3', 4)" class="id">System</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs4', 5)" onmouseover="showTip(event, 'fs4', 5)" class="id">IO</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs3', 6)" onmouseover="showTip(event, 'fs3', 6)" class="id">System</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs5', 7)" onmouseover="showTip(event, 'fs5', 7)" class="id">Text</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs6', 8)" onmouseover="showTip(event, 'fs6', 8)" class="id">Json</span>
+<span class="k">open</span> <span class="id">TestPrune</span><span class="pn">.</span><span class="id">Orchestration</span>
+<span class="k">open</span> <span class="id">TestPrune</span><span class="pn">.</span><span class="id">ProjectLoader</span>
+<span class="k">open</span> <span class="id">TestPrune</span><span class="pn">.</span><span class="id">AuditSink</span>
+
+<span class="c">/// Metrics collected from an index run.</span>
+<span class="k">type</span> <span class="id">BenchmarkMetrics</span> <span class="o">=</span>
+    <span class="pn">{</span> <span class="id">Mode</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs7', 9)" onmouseover="showTip(event, 'fs7', 9)" class="id">string</span>
+      <span class="id">Symbols</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs8', 10)" onmouseover="showTip(event, 'fs8', 10)" class="id">int</span>
+      <span class="id">Dependencies</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs8', 11)" onmouseover="showTip(event, 'fs8', 11)" class="id">int</span>
+      <span class="id">TestMethods</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs8', 12)" onmouseover="showTip(event, 'fs8', 12)" class="id">int</span>
+      <span class="id">ProjectsAnalyzed</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs8', 13)" onmouseover="showTip(event, 'fs8', 13)" class="id">int</span>
+      <span class="id">ProjectsSkipped</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs8', 14)" onmouseover="showTip(event, 'fs8', 14)" class="id">int</span>
+      <span class="id">FilesAnalyzed</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs8', 15)" onmouseover="showTip(event, 'fs8', 15)" class="id">int</span>
+      <span class="id">FilesSkipped</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs8', 16)" onmouseover="showTip(event, 'fs8', 16)" class="id">int</span> <span class="pn">}</span>
+
+<span class="c">/// Capture stderr output from runIndexWith to parse metrics.</span>
+<span class="c">/// runIndexWith prints stats to stderr — we intercept them.</span>
+<span class="k">let</span> <span class="k">private</span> <span class="id">captureIndex</span> <span class="id">repoRoot</span> <span class="id">checker</span> <span class="id">parallelism</span> <span class="o">=</span>
+    <span class="k">let</span> <span class="id">oldErr</span> <span class="o">=</span> <span class="id">Console</span><span class="pn">.</span><span class="id">Error</span>
+    <span class="k">let</span> <span class="id">sw</span> <span class="o">=</span> <span class="k">new</span> <span class="id">StringWriter</span><span class="pn">(</span><span class="pn">)</span>
+    <span class="id">Console</span><span class="pn">.</span><span class="id">SetError</span><span class="pn">(</span><span class="id">sw</span><span class="pn">)</span>
+
+    <span class="k">try</span>
+        <span class="k">let</span> <span class="id">exitCode</span> <span class="o">=</span>
+            <span class="id">runIndexWith</span> <span class="id">dotnetBuildRunner</span> <span class="id">getProjectOptions</span> <span class="id">repoRoot</span> <span class="id">checker</span> <span class="id">parallelism</span> <span class="pn">(</span><span class="id">createNoopSink</span> <span class="pn">(</span><span class="pn">)</span><span class="pn">)</span>
+
+        <span class="id">Console</span><span class="pn">.</span><span class="id">SetError</span><span class="pn">(</span><span class="id">oldErr</span><span class="pn">)</span>
+        <span class="k">let</span> <span class="id">output</span> <span class="o">=</span> <span class="id">sw</span><span class="pn">.</span><span class="id">ToString</span><span class="pn">(</span><span class="pn">)</span>
+        <span class="id">exitCode</span><span class="pn">,</span> <span class="id">output</span>
+    <span class="k">with</span> <span class="id">ex</span> <span class="k">-&gt;</span>
+        <span class="id">Console</span><span class="pn">.</span><span class="id">SetError</span><span class="pn">(</span><span class="id">oldErr</span><span class="pn">)</span>
+        <span onmouseout="hideTip(event, 'fs9', 17)" onmouseover="showTip(event, 'fs9', 17)" class="id">reraise</span> <span class="pn">(</span><span class="pn">)</span>
+
+<span class="k">let</span> <span class="k">private</span> <span class="id">parseMetrics</span> <span class="pn">(</span><span class="id">mode</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs7', 18)" onmouseover="showTip(event, 'fs7', 18)" class="id">string</span><span class="pn">)</span> <span class="pn">(</span><span class="id">output</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs7', 19)" onmouseover="showTip(event, 'fs7', 19)" class="id">string</span><span class="pn">)</span> <span class="pn">:</span> <span class="id">BenchmarkMetrics</span> <span class="o">=</span>
+    <span class="k">let</span> <span class="id">lines</span> <span class="o">=</span> <span class="id">output</span><span class="pn">.</span><span class="id">Split</span><span class="pn">(</span><span class="s">&#39;\n&#39;</span><span class="pn">)</span>
+
+    <span class="k">let</span> <span class="id">parseIntAfter</span> <span class="pn">(</span><span class="id">prefix</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs7', 20)" onmouseover="showTip(event, 'fs7', 20)" class="id">string</span><span class="pn">)</span> <span class="pn">(</span><span class="id">line</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs7', 21)" onmouseover="showTip(event, 'fs7', 21)" class="id">string</span><span class="pn">)</span> <span class="o">=</span>
+        <span class="k">let</span> <span class="id">idx</span> <span class="o">=</span> <span class="id">line</span><span class="pn">.</span><span class="id">IndexOf</span><span class="pn">(</span><span class="id">prefix</span><span class="pn">)</span>
+
+        <span class="k">if</span> <span class="id">idx</span> <span class="pn">&gt;</span><span class="o">=</span> <span class="n">0</span> <span class="k">then</span>
+            <span class="k">let</span> <span class="id">rest</span> <span class="o">=</span> <span class="id">line</span><span class="pn">.</span><span class="id">Substring</span><span class="pn">(</span><span class="id">idx</span> <span class="o">+</span> <span class="id">prefix</span><span class="pn">.</span><span class="id">Length</span><span class="pn">)</span><span class="pn">.</span><span class="id">Trim</span><span class="pn">(</span><span class="pn">)</span>
+            <span class="k">let</span> <span class="id">numStr</span> <span class="o">=</span> <span class="id">rest</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs10', 22)" onmouseover="showTip(event, 'fs10', 22)" class="id">Seq</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs11', 23)" onmouseover="showTip(event, 'fs11', 23)" class="id">takeWhile</span> <span class="id">Char</span><span class="pn">.</span><span class="id">IsDigit</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs10', 24)" onmouseover="showTip(event, 'fs10', 24)" class="id">Seq</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs12', 25)" onmouseover="showTip(event, 'fs12', 25)" class="id">toArray</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs13', 26)" onmouseover="showTip(event, 'fs13', 26)" class="id">String</span>
+            <span class="id">Int32</span><span class="pn">.</span><span class="id">TryParse</span><span class="pn">(</span><span class="id">numStr</span><span class="pn">)</span> <span class="o">|&gt;</span> <span class="k">function</span> <span class="k">true</span><span class="pn">,</span> <span class="id">v</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs14', 27)" onmouseover="showTip(event, 'fs14', 27)" class="id">Some</span> <span class="id">v</span> <span class="pn">|</span> <span class="id">_</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs15', 28)" onmouseover="showTip(event, 'fs15', 28)" class="id">None</span>
+        <span class="k">else</span>
+            <span onmouseout="hideTip(event, 'fs15', 29)" onmouseover="showTip(event, 'fs15', 29)" class="id">None</span>
+
+    <span class="k">let</span> <span class="id">findInt</span> <span class="id">prefix</span> <span class="o">=</span>
+        <span class="id">lines</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs16', 30)" onmouseover="showTip(event, 'fs16', 30)" class="id">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs17', 31)" onmouseover="showTip(event, 'fs17', 31)" class="id">tryPick</span> <span class="pn">(</span><span class="id">parseIntAfter</span> <span class="id">prefix</span><span class="pn">)</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs18', 32)" onmouseover="showTip(event, 'fs18', 32)" class="id">Option</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs19', 33)" onmouseover="showTip(event, 'fs19', 33)" class="id">defaultValue</span> <span class="n">0</span>
+
+    <span class="pn">{</span> <span class="id">Mode</span> <span class="o">=</span> <span class="id">mode</span>
+      <span class="id">Symbols</span> <span class="o">=</span> <span class="id">findInt</span> <span class="s">&quot;Indexed &quot;</span>
+      <span class="id">Dependencies</span> <span class="o">=</span>
+          <span class="id">lines</span>
+          <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs16', 34)" onmouseover="showTip(event, 'fs16', 34)" class="id">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs17', 35)" onmouseover="showTip(event, 'fs17', 35)" class="id">tryPick</span> <span class="pn">(</span><span class="k">fun</span> <span class="id">l</span> <span class="k">-&gt;</span>
+              <span class="k">if</span> <span class="id">l</span><span class="pn">.</span><span class="id">Contains</span><span class="pn">(</span><span class="s">&quot;symbols,&quot;</span><span class="pn">)</span> <span class="k">then</span>
+                  <span class="k">let</span> <span class="id">parts</span> <span class="o">=</span> <span class="id">l</span><span class="pn">.</span><span class="id">Split</span><span class="pn">(</span><span class="s">&#39;,&#39;</span><span class="pn">)</span>
+
+                  <span class="id">parts</span>
+                  <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs16', 36)" onmouseover="showTip(event, 'fs16', 36)" class="id">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs17', 37)" onmouseover="showTip(event, 'fs17', 37)" class="id">tryPick</span> <span class="pn">(</span><span class="k">fun</span> <span class="id">p</span> <span class="k">-&gt;</span>
+                      <span class="k">if</span> <span class="id">p</span><span class="pn">.</span><span class="id">Contains</span><span class="pn">(</span><span class="s">&quot;dependencies&quot;</span><span class="pn">)</span> <span class="k">then</span>
+                          <span class="id">p</span><span class="pn">.</span><span class="id">Trim</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="id">Split</span><span class="pn">(</span><span class="s">&#39; &#39;</span><span class="pn">)</span><span class="pn">.</span><span class="pn">[</span><span class="n">0</span><span class="pn">]</span> <span class="o">|&gt;</span> <span class="id">Int32</span><span class="pn">.</span><span class="id">TryParse</span> <span class="o">|&gt;</span> <span class="k">function</span> <span class="k">true</span><span class="pn">,</span> <span class="id">v</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs14', 38)" onmouseover="showTip(event, 'fs14', 38)" class="id">Some</span> <span class="id">v</span> <span class="pn">|</span> <span class="id">_</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs15', 39)" onmouseover="showTip(event, 'fs15', 39)" class="id">None</span>
+                      <span class="k">else</span>
+                          <span onmouseout="hideTip(event, 'fs15', 40)" onmouseover="showTip(event, 'fs15', 40)" class="id">None</span><span class="pn">)</span>
+              <span class="k">else</span>
+                  <span onmouseout="hideTip(event, 'fs15', 41)" onmouseover="showTip(event, 'fs15', 41)" class="id">None</span><span class="pn">)</span>
+          <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs18', 42)" onmouseover="showTip(event, 'fs18', 42)" class="id">Option</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs19', 43)" onmouseover="showTip(event, 'fs19', 43)" class="id">defaultValue</span> <span class="n">0</span>
+      <span class="id">TestMethods</span> <span class="o">=</span>
+          <span class="id">lines</span>
+          <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs16', 44)" onmouseover="showTip(event, 'fs16', 44)" class="id">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs17', 45)" onmouseover="showTip(event, 'fs17', 45)" class="id">tryPick</span> <span class="pn">(</span><span class="k">fun</span> <span class="id">l</span> <span class="k">-&gt;</span>
+              <span class="k">if</span> <span class="id">l</span><span class="pn">.</span><span class="id">Contains</span><span class="pn">(</span><span class="s">&quot;test methods&quot;</span><span class="pn">)</span> <span class="k">then</span>
+                  <span class="k">let</span> <span class="id">parts</span> <span class="o">=</span> <span class="id">l</span><span class="pn">.</span><span class="id">Split</span><span class="pn">(</span><span class="s">&#39;,&#39;</span><span class="pn">)</span>
+
+                  <span class="id">parts</span>
+                  <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs16', 46)" onmouseover="showTip(event, 'fs16', 46)" class="id">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs17', 47)" onmouseover="showTip(event, 'fs17', 47)" class="id">tryPick</span> <span class="pn">(</span><span class="k">fun</span> <span class="id">p</span> <span class="k">-&gt;</span>
+                      <span class="k">if</span> <span class="id">p</span><span class="pn">.</span><span class="id">Contains</span><span class="pn">(</span><span class="s">&quot;test methods&quot;</span><span class="pn">)</span> <span class="k">then</span>
+                          <span class="id">p</span><span class="pn">.</span><span class="id">Trim</span><span class="pn">(</span><span class="pn">)</span><span class="pn">.</span><span class="id">Split</span><span class="pn">(</span><span class="s">&#39; &#39;</span><span class="pn">)</span><span class="pn">.</span><span class="pn">[</span><span class="n">0</span><span class="pn">]</span> <span class="o">|&gt;</span> <span class="id">Int32</span><span class="pn">.</span><span class="id">TryParse</span> <span class="o">|&gt;</span> <span class="k">function</span> <span class="k">true</span><span class="pn">,</span> <span class="id">v</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs14', 48)" onmouseover="showTip(event, 'fs14', 48)" class="id">Some</span> <span class="id">v</span> <span class="pn">|</span> <span class="id">_</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs15', 49)" onmouseover="showTip(event, 'fs15', 49)" class="id">None</span>
+                      <span class="k">else</span>
+                          <span onmouseout="hideTip(event, 'fs15', 50)" onmouseover="showTip(event, 'fs15', 50)" class="id">None</span><span class="pn">)</span>
+              <span class="k">else</span>
+                  <span onmouseout="hideTip(event, 'fs15', 51)" onmouseover="showTip(event, 'fs15', 51)" class="id">None</span><span class="pn">)</span>
+          <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs18', 52)" onmouseover="showTip(event, 'fs18', 52)" class="id">Option</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs19', 53)" onmouseover="showTip(event, 'fs19', 53)" class="id">defaultValue</span> <span class="n">0</span>
+      <span class="id">ProjectsAnalyzed</span> <span class="o">=</span> <span class="id">findInt</span> <span class="s">&quot;Found &quot;</span>
+      <span class="id">ProjectsSkipped</span> <span class="o">=</span> <span class="id">findInt</span> <span class="s">&quot;Skipped &quot;</span>
+      <span class="id">FilesAnalyzed</span> <span class="o">=</span> <span class="n">0</span> <span class="c">// TODO: parse from output if needed</span>
+      <span class="id">FilesSkipped</span> <span class="o">=</span> <span class="id">findInt</span> <span class="s">&quot;Skipped &quot;</span> <span class="pn">}</span>
+
+<span class="pn">[&lt;</span><span onmouseout="hideTip(event, 'fs1', 54)" onmouseover="showTip(event, 'fs1', 54)" class="id">EntryPoint</span><span class="pn">&gt;]</span>
+<span class="k">let</span> <span class="id">main</span> <span class="id">argv</span> <span class="o">=</span>
+    <span class="k">let</span> <span class="id">repoRoot</span> <span class="o">=</span>
+        <span class="k">match</span> <span class="id">argv</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs16', 55)" onmouseover="showTip(event, 'fs16', 55)" class="id">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs20', 56)" onmouseover="showTip(event, 'fs20', 56)" class="id">tryFind</span> <span class="pn">(</span><span class="k">fun</span> <span class="id">a</span> <span class="k">-&gt;</span> <span class="id">not</span> <span class="pn">(</span><span class="id">a</span><span class="pn">.</span><span class="id">StartsWith</span><span class="pn">(</span><span class="s">&quot;--&quot;</span><span class="pn">)</span><span class="pn">)</span><span class="pn">)</span> <span class="k">with</span>
+        <span class="pn">|</span> <span onmouseout="hideTip(event, 'fs14', 57)" onmouseover="showTip(event, 'fs14', 57)" class="id">Some</span> <span class="id">path</span> <span class="k">-&gt;</span> <span class="id">Path</span><span class="pn">.</span><span class="id">GetFullPath</span><span class="pn">(</span><span class="id">path</span><span class="pn">)</span>
+        <span class="pn">|</span> <span onmouseout="hideTip(event, 'fs15', 58)" onmouseover="showTip(event, 'fs15', 58)" class="id">None</span> <span class="k">-&gt;</span>
+            <span class="c">// Default: examples/SampleSolution relative to repo root</span>
+            <span class="k">let</span> <span class="id">thisDir</span> <span class="o">=</span> <span class="id">AppContext</span><span class="pn">.</span><span class="id">BaseDirectory</span>
+            <span class="c">// Walk up to find repo root (contains TestPrune.slnx)</span>
+            <span class="k">let</span> <span class="k">rec</span> <span class="id">findRoot</span> <span class="id">dir</span> <span class="o">=</span>
+                <span class="k">if</span> <span class="id">File</span><span class="pn">.</span><span class="id">Exists</span><span class="pn">(</span><span class="id">Path</span><span class="pn">.</span><span class="id">Combine</span><span class="pn">(</span><span class="id">dir</span><span class="pn">,</span> <span class="s">&quot;TestPrune.slnx&quot;</span><span class="pn">)</span><span class="pn">)</span> <span class="k">then</span> <span class="id">dir</span>
+                <span class="k">else</span> <span class="id">findRoot</span> <span class="pn">(</span><span class="id">Path</span><span class="pn">.</span><span class="id">GetDirectoryName</span><span class="pn">(</span><span class="id">dir</span><span class="pn">)</span><span class="pn">)</span>
+
+            <span class="id">Path</span><span class="pn">.</span><span class="id">Combine</span><span class="pn">(</span><span class="id">findRoot</span> <span class="id">thisDir</span><span class="pn">,</span> <span class="s">&quot;examples&quot;</span><span class="pn">,</span> <span class="s">&quot;SampleSolution&quot;</span><span class="pn">)</span>
+
+    <span class="k">let</span> <span class="id">parallelism</span> <span class="o">=</span> <span class="id">Environment</span><span class="pn">.</span><span class="id">ProcessorCount</span>
+    <span class="k">let</span> <span class="id">checker</span> <span class="o">=</span> <span class="id">createChecker</span> <span class="pn">(</span><span class="pn">)</span>
+
+    <span class="c">// Cold index: delete DB to force full analysis</span>
+    <span class="k">let</span> <span class="id">dbPath</span> <span class="o">=</span> <span class="id">Path</span><span class="pn">.</span><span class="id">Combine</span><span class="pn">(</span><span class="id">repoRoot</span><span class="pn">,</span> <span class="s">&quot;.test-prune.db&quot;</span><span class="pn">)</span>
+
+    <span class="k">if</span> <span class="id">File</span><span class="pn">.</span><span class="id">Exists</span><span class="pn">(</span><span class="id">dbPath</span><span class="pn">)</span> <span class="k">then</span>
+        <span class="id">File</span><span class="pn">.</span><span class="id">Delete</span><span class="pn">(</span><span class="id">dbPath</span><span class="pn">)</span>
+
+    <span onmouseout="hideTip(event, 'fs21', 59)" onmouseover="showTip(event, 'fs21', 59)" class="id">eprintfn</span> <span class="s">&quot;=== Cold index ===&quot;</span>
+    <span class="k">let</span> <span class="id">coldExit</span><span class="pn">,</span> <span class="id">coldOutput</span> <span class="o">=</span> <span class="id">captureIndex</span> <span class="id">repoRoot</span> <span class="id">checker</span> <span class="id">parallelism</span>
+
+    <span class="k">if</span> <span class="id">coldExit</span> <span class="o">&lt;&gt;</span> <span class="n">0</span> <span class="k">then</span>
+        <span onmouseout="hideTip(event, 'fs21', 60)" onmouseover="showTip(event, 'fs21', 60)" class="id">eprintfn</span> <span class="s">&quot;Cold index failed with exit code %d&quot;</span> <span class="id">coldExit</span>
+        <span class="n">1</span>
+    <span class="k">else</span>
+        <span class="k">let</span> <span class="id">coldMetrics</span> <span class="o">=</span> <span class="id">parseMetrics</span> <span class="s">&quot;cold&quot;</span> <span class="id">coldOutput</span>
+
+        <span class="c">// Warm index: reuse DB and FCS caches</span>
+        <span onmouseout="hideTip(event, 'fs21', 61)" onmouseover="showTip(event, 'fs21', 61)" class="id">eprintfn</span> <span class="s">&quot;=== Warm index ===&quot;</span>
+        <span class="k">let</span> <span class="id">warmExit</span><span class="pn">,</span> <span class="id">warmOutput</span> <span class="o">=</span> <span class="id">captureIndex</span> <span class="id">repoRoot</span> <span class="id">checker</span> <span class="id">parallelism</span>
+
+        <span class="k">if</span> <span class="id">warmExit</span> <span class="o">&lt;&gt;</span> <span class="n">0</span> <span class="k">then</span>
+            <span onmouseout="hideTip(event, 'fs21', 62)" onmouseover="showTip(event, 'fs21', 62)" class="id">eprintfn</span> <span class="s">&quot;Warm index failed with exit code %d&quot;</span> <span class="id">warmExit</span>
+            <span class="n">1</span>
+        <span class="k">else</span>
+            <span class="k">let</span> <span class="id">warmMetrics</span> <span class="o">=</span> <span class="id">parseMetrics</span> <span class="s">&quot;warm&quot;</span> <span class="id">warmOutput</span>
+
+            <span class="k">let</span> <span class="id">results</span> <span class="o">=</span> <span class="pn">[|</span> <span class="id">coldMetrics</span><span class="pn">;</span> <span class="id">warmMetrics</span> <span class="pn">|]</span>
+            <span class="k">let</span> <span class="id">json</span> <span class="o">=</span> <span class="id">JsonSerializer</span><span class="pn">.</span><span class="id">Serialize</span><span class="pn">(</span><span class="id">results</span><span class="pn">,</span> <span class="id">JsonSerializerOptions</span><span class="pn">(</span><span class="id">WriteIndented</span> <span class="o">=</span> <span class="k">true</span><span class="pn">)</span><span class="pn">)</span>
+            <span onmouseout="hideTip(event, 'fs2', 63)" onmouseover="showTip(event, 'fs2', 63)" class="id">printfn</span> <span class="s">&quot;%s&quot;</span> <span class="id">json</span>
+            <span class="n">0</span>
+</code></pre>
+<p><strong>Step 2: Run it to verify</strong></p>
+<p>Run: <code>dotnet run --project benchmarks/TestPrune.Benchmarks -- ../../examples/SampleSolution</code>
+Expected: JSON output on stdout with cold + warm metrics, diagnostic output on stderr</p>
+<p><strong>Step 3: Commit</strong></p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">Implement</span> <span class="id">cold</span> <span class="o">+</span> <span class="id">warm</span> <span class="id">index</span> <span class="id">benchmark</span> <span class="k">with</span> <span class="id">JSON</span> <span class="id">output</span>
+</code></pre>
+<hr />
+<h3><a name="Task-3-Gitignore-benchmark-results" class="anchor" href="#Task-3-Gitignore-benchmark-results">Task 3: Gitignore benchmark results</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>.gitignore</code></p>
+<p><strong>Step 1: Add results directory</strong></p>
+<p>Append to <code>.gitignore</code>:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="pn">#</span><span class="id">Benchmark</span> <span class="id">results</span>
+<span class="id">benchmarks</span><span class="o">/</span><span class="id">results</span><span class="o">/</span>
+</code></pre>
+<p><strong>Step 2: Create the results directory with a .gitkeep</strong></p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="bash">mkdir -p benchmarks/results
+</code></pre></td></tr></table>
+<p><strong>Step 3: Commit</strong></p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">Gitignore</span> <span class="id">benchmark</span> <span class="id">results</span> <span class="id">directory</span>
+</code></pre>
+<hr />
+<h3><a name="Task-4-Add-mise-tasks" class="anchor" href="#Task-4-Add-mise-tasks">Task 4: Add mise tasks</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>mise.toml</code></p>
+<p><strong>Step 1: Add bench and bench-raw tasks</strong></p>
+<p>Append to <code>mise.toml</code>:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="toml">[tasks.bench]
+description = "Run benchmarks with dotnet-trace profiling (produces speedscope flame graph)"
+run = """
+mkdir -p benchmarks/results
+dotnet-trace collect --format speedscope \
+  --output benchmarks/results/trace \
+  -- dotnet run --project benchmarks/TestPrune.Benchmarks -c Release
+"""
+depends = ["build"]
+
+[tasks.bench-raw]
+description = "Run benchmarks without profiling (JSON metrics only)"
+run = "dotnet run --project benchmarks/TestPrune.Benchmarks -c Release"
+depends = ["build"]
+</code></pre></td></tr></table>
+<p><strong>Step 2: Verify</strong></p>
+<p>Run: <code>mise run bench-raw</code>
+Expected: Builds, runs benchmark, prints JSON metrics</p>
+<p><strong>Step 3: Commit</strong></p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">Add</span> <span class="id">mise</span> <span class="id">bench</span> <span class="k">and</span> <span class="id">bench</span><span class="o">-</span><span class="id">raw</span> <span class="id">tasks</span>
+</code></pre>
+<hr />
+<h3><a name="Task-5-Add-experiment-flags" class="anchor" href="#Task-5-Add-experiment-flags">Task 5: Add experiment flags</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>benchmarks/TestPrune.Benchmarks/Program.fs</code></p>
+<p><strong>Step 1: Parse CLI flags and pass to FCS checker</strong></p>
+<p>Update <code>createChecker</code> call to accept experiment flags. Since <code>createChecker</code> is in <code>Orchestration.fs</code> and we don't want to modify production code, create a local variant in the benchmark:</p>
+<p>Add before <code>[&lt;EntryPoint&gt;]</code>:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="k">private</span> <span class="id">createBenchChecker</span> <span class="pn">(</span><span class="id">useTransparent</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs22', 64)" onmouseover="showTip(event, 'fs22', 64)" class="id">bool</span><span class="pn">)</span> <span class="pn">(</span><span class="id">keepSymbolUses</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs22', 65)" onmouseover="showTip(event, 'fs22', 65)" class="id">bool</span><span class="pn">)</span> <span class="pn">(</span><span class="id">captureIds</span><span class="pn">:</span> <span onmouseout="hideTip(event, 'fs22', 66)" onmouseover="showTip(event, 'fs22', 66)" class="id">bool</span><span class="pn">)</span> <span class="o">=</span>
+    <span class="id">FSharpChecker</span><span class="pn">.</span><span class="id">Create</span><span class="pn">(</span>
+        <span class="id">projectCacheSize</span> <span class="o">=</span> <span class="n">200</span><span class="pn">,</span>
+        <span class="id">keepAssemblyContents</span> <span class="o">=</span> <span class="k">true</span><span class="pn">,</span>
+        <span class="id">keepAllBackgroundResolutions</span> <span class="o">=</span> <span class="k">true</span><span class="pn">,</span>
+        <span class="id">keepAllBackgroundSymbolUses</span> <span class="o">=</span> <span class="id">keepSymbolUses</span><span class="pn">,</span>
+        <span class="id">parallelReferenceResolution</span> <span class="o">=</span> <span class="k">true</span><span class="pn">,</span>
+        <span class="id">captureIdentifiersWhenParsing</span> <span class="o">=</span> <span class="id">captureIds</span><span class="pn">,</span>
+        <span class="id">useTransparentCompiler</span> <span class="o">=</span> <span class="id">useTransparent</span>
+    <span class="pn">)</span>
+</code></pre>
+<p>Update <code>main</code> to parse flags:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="id">useTransparent</span> <span class="o">=</span> <span class="id">argv</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs16', 67)" onmouseover="showTip(event, 'fs16', 67)" class="id">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs23', 68)" onmouseover="showTip(event, 'fs23', 68)" class="id">contains</span> <span class="s">&quot;--transparent-compiler&quot;</span>
+<span class="k">let</span> <span class="id">keepSymbolUses</span> <span class="o">=</span> <span class="id">argv</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs16', 69)" onmouseover="showTip(event, 'fs16', 69)" class="id">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs23', 70)" onmouseover="showTip(event, 'fs23', 70)" class="id">contains</span> <span class="s">&quot;--keep-all-background-symbol-uses&quot;</span>
+<span class="k">let</span> <span class="id">captureIds</span> <span class="o">=</span> <span class="id">argv</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs16', 71)" onmouseover="showTip(event, 'fs16', 71)" class="id">Array</span><span class="pn">.</span><span onmouseout="hideTip(event, 'fs23', 72)" onmouseover="showTip(event, 'fs23', 72)" class="id">contains</span> <span class="s">&quot;--capture-identifiers-when-parsing&quot;</span>
+
+<span class="k">let</span> <span class="id">checker</span> <span class="o">=</span> <span class="id">createBenchChecker</span> <span class="id">useTransparent</span> <span class="id">keepSymbolUses</span> <span class="id">captureIds</span>
+</code></pre>
+<p><strong>Step 2: Verify the flag works</strong></p>
+<p>Run: <code>dotnet run --project benchmarks/TestPrune.Benchmarks -- --transparent-compiler</code>
+Expected: Runs with TransparentCompiler enabled (may produce different timings in trace)</p>
+<p><strong>Step 3: Commit</strong></p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">Add</span> <span class="id">FCS</span> <span class="id">experiment</span> <span class="id">flags</span> <span class="k">to</span> <span class="id">benchmark</span> <span class="pn">(</span><span class="o">--</span><span class="id">transparent</span><span class="o">-</span><span class="id">compiler</span><span class="pn">,</span> <span class="id">etc</span><span class="pn">.</span><span class="pn">)</span>
+</code></pre>
+<hr />
+<h3><a name="Task-6-End-to-end-verification-with-dotnet-trace" class="anchor" href="#Task-6-End-to-end-verification-with-dotnet-trace">Task 6: End-to-end verification with dotnet-trace</a></h3>
+<p><strong>Step 1: Ensure dotnet-trace is installed</strong></p>
+<p>Run: <code>dotnet tool list -g | grep dotnet-trace || dotnet tool install -g dotnet-trace</code></p>
+<p><strong>Step 2: Run the full bench task</strong></p>
+<p>Run: <code>mise run bench</code>
+Expected:
+- <code>benchmarks/results/trace.speedscope.json</code> produced
+- JSON metrics on stdout
+- Open <code>trace.speedscope.json</code> in <a href="https://www.speedscope.app/">https://www.speedscope.app/</a> to verify flame graph renders</p>
+<p><strong>Step 3: Verify experiment comparison workflow</strong></p>
+<p>Run two traces and compare:</p>
+<table class="pre"><tr><td class="snippet"><pre class="fssnip"><code lang="bash">mise run bench
+mv benchmarks/results/trace.speedscope.json benchmarks/results/baseline.speedscope.json
+mise run bench -- --transparent-compiler
+mv benchmarks/results/trace.speedscope.json benchmarks/results/transparent.speedscope.json
+</code></pre></td></tr></table>
+<p>Open both in speedscope side by side.</p>
+<p><strong>Step 4: Commit (if any fixes needed)</strong></p>
+<hr />
+<h3><a name="Task-7-Update-fsac-learnings-md" class="anchor" href="#Task-7-Update-fsac-learnings-md">Task 7: Update fsac-learnings.md</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>docs/plans/fsac-learnings.md</code></p>
+<p><strong>Step 1: Check off the benchmarks item</strong></p>
+<p>Change line 73 from:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="o">-</span> <span class="pn">[</span> <span class="pn">]</span> <span class="o">**</span><span class="id">Indexing</span> <span class="id">benchmarks</span><span class="o">**</span>
+</code></pre>
+<p>to:</p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="o">-</span> <span class="pn">[</span><span class="id">x</span><span class="pn">]</span> <span class="o">**</span><span class="id">Indexing</span> <span class="id">benchmarks</span><span class="o">**</span>
+</code></pre>
+<p><strong>Step 2: Commit</strong></p>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="id">Mark</span> <span class="id">indexing</span> <span class="id">benchmarks</span> <span class="k">as</span> <span class="k">done</span> <span class="k">in</span> <span class="id">fsac</span><span class="o">-</span><span class="id">learnings</span>
+</code></pre>
+
+        <div class="fsdocs-tip" id="fs1">Multiple items<br />type EntryPointAttribute =
+  inherit Attribute
+  new: unit -&gt; EntryPointAttribute<br /><br />--------------------<br />new: unit -&gt; EntryPointAttribute</div>
+<div class="fsdocs-tip" id="fs2">val printfn: format: Printf.TextWriterFormat&lt;&#39;T&gt; -&gt; &#39;T</div>
+<div class="fsdocs-tip" id="fs3">namespace System</div>
+<div class="fsdocs-tip" id="fs4">namespace System.IO</div>
+<div class="fsdocs-tip" id="fs5">namespace System.Text</div>
+<div class="fsdocs-tip" id="fs6">namespace System.Text.Json</div>
+<div class="fsdocs-tip" id="fs7">Multiple items<br />val string: value: &#39;T -&gt; string<br /><br />--------------------<br />type string = System.String</div>
+<div class="fsdocs-tip" id="fs8">Multiple items<br />val int: value: &#39;T -&gt; int (requires member op_Explicit)<br /><br />--------------------<br />type int = int32<br /><br />--------------------<br />type int&lt;&#39;Measure&gt; =
+  int</div>
+<div class="fsdocs-tip" id="fs9">val reraise: unit -&gt; &#39;T</div>
+<div class="fsdocs-tip" id="fs10">module Seq
+
+from Microsoft.FSharp.Collections</div>
+<div class="fsdocs-tip" id="fs11">val takeWhile: predicate: (&#39;T -&gt; bool) -&gt; source: &#39;T seq -&gt; &#39;T seq</div>
+<div class="fsdocs-tip" id="fs12">val toArray: source: &#39;T seq -&gt; &#39;T array</div>
+<div class="fsdocs-tip" id="fs13">module String
+
+from Microsoft.FSharp.Core</div>
+<div class="fsdocs-tip" id="fs14">union case Option.Some: Value: &#39;T -&gt; Option&lt;&#39;T&gt;</div>
+<div class="fsdocs-tip" id="fs15">union case Option.None: Option&lt;&#39;T&gt;</div>
+<div class="fsdocs-tip" id="fs16">module Array
+
+from Microsoft.FSharp.Collections</div>
+<div class="fsdocs-tip" id="fs17">val tryPick: chooser: (&#39;T -&gt; &#39;U option) -&gt; array: &#39;T array -&gt; &#39;U option</div>
+<div class="fsdocs-tip" id="fs18">module Option
+
+from Microsoft.FSharp.Core</div>
+<div class="fsdocs-tip" id="fs19">val defaultValue: value: &#39;T -&gt; option: &#39;T option -&gt; &#39;T</div>
+<div class="fsdocs-tip" id="fs20">val tryFind: predicate: (&#39;T -&gt; bool) -&gt; array: &#39;T array -&gt; &#39;T option</div>
+<div class="fsdocs-tip" id="fs21">val eprintfn: format: Printf.TextWriterFormat&lt;&#39;T&gt; -&gt; &#39;T</div>
+<div class="fsdocs-tip" id="fs22">type bool = System.Boolean</div>
+<div class="fsdocs-tip" id="fs23">val contains: value: &#39;T -&gt; array: &#39;T array -&gt; bool (requires equality)</div>
+
+    </div>
+</main>
+<aside id="fsdocs-page-menu">
+    <p id="on-this-page">On this page</p>
+    <ul>
+  <li class="level-1">
+    <a href="#Indexing-Benchmarks-Implementation-Plan">
+      Indexing Benchmarks Implementation Plan
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Task-1-Create-the-benchmark-project-and-add-to-solution">
+      Task 1: Create the benchmark project and add to solution
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Task-2-Implement-cold-warm-index-benchmark">
+      Task 2: Implement cold + warm index benchmark
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Task-3-Gitignore-benchmark-results">
+      Task 3: Gitignore benchmark results
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Task-4-Add-mise-tasks">
+      Task 4: Add mise tasks
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Task-5-Add-experiment-flags">
+      Task 5: Add experiment flags
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Task-6-End-to-end-verification-with-dotnet-trace">
+      Task 6: End-to-end verification with dotnet-trace
+    </a>
+  </li>
+  <li class="level-3">
+    <a href="#Task-7-Update-fsac-learnings-md">
+      Task 7: Update fsac-learnings.md
+    </a>
+  </li>
+</ul>
+</aside>
+<dialog>
+    <input type="search" placeholder="Search docs" />
+    <div class="results">
+        <ul></ul>
+        <p class="empty">Type something to start searching.</p>
+    </div>
+</dialog>
+<script type="module" src="/TestPrune/content/fsdocs-tips.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-theme-toggle.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-details-toggle.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-theme.js"></script>
+<script type="module" src="/TestPrune/content/fsdocs-search.js"></script>
+
+</body>
+</html>
