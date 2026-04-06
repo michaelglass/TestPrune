@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main, master]
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 jobs:
   build:
     uses: michaelglass/MichaelsWackyFsPackageTools/.github/workflows/michaels-wacky-build.yml@main
@@ -14,7 +19,3 @@ jobs:
       fantomas-paths: 'src/ tests/ examples/'
       has-examples: true
       example-path: 'examples/SampleSolution'
-    permissions:
-      contents: read
-      checks: write
-      pull-requests: write

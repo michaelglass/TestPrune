@@ -5,12 +5,17 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   deploy-docs:
     uses: michaelglass/MichaelsWackyFsPackageTools/.github/workflows/michaels-wacky-docs.yml@main
     with:
       fsdocs-parameters: '--parameters root /TestPrune/'
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
