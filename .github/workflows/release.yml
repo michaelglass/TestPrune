@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'core-v*'
+      - 'falco-v*'
+
+jobs:
+  release-core:
+    if: startsWith(github.ref, 'refs/tags/core-v')
+    uses: michaelglass/MichaelsWackyFsPackageTools/.github/workflows/michaels-wacky-release.yml@main
+    with:
+      package-name: TestPrune
+      tag-prefix: core-v
+      fsproj-path: src/TestPrune.Core/TestPrune.Core.fsproj
+      extra-fsproj-paths: 'src/TestPrune/TestPrune.fsproj'
+    permissions:
+      contents: write
+
+  publish-core:
+    if: startsWith(github.ref, 'refs/tags/core-v')
+    needs: release-core
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./artifacts
+      - name: Login to NuGet (Trusted Publishing)
+        id: nuget-login
+        uses: nuget/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Publish to NuGet
+        run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+  release-falco:
+    if: startsWith(github.ref, 'refs/tags/falco-v')
+    uses: michaelglass/MichaelsWackyFsPackageTools/.github/workflows/michaels-wacky-release.yml@main
+    with:
+      package-name: TestPrune.Falco
+      tag-prefix: falco-v
+      fsproj-path: src/TestPrune.Falco/TestPrune.Falco.fsproj
+    permissions:
+      contents: write
+
+  publish-falco:
+    if: startsWith(github.ref, 'refs/tags/falco-v')
+    needs: release-falco
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./artifacts
+      - name: Login to NuGet (Trusted Publishing)
+        id: nuget-login
+        uses: nuget/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Publish to NuGet
+        run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
