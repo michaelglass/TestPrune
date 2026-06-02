@@ -5,6 +5,7 @@ on:
     tags:
       - 'core-v*'
       - 'falco-v*'
+      - 'analyzers-v*'
   workflow_dispatch:
 
 permissions:
