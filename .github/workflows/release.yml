@@ -48,6 +48,9 @@ jobs:
       package-name: TestPrune.Analyzers
       tag-prefix: analyzers-v
       fsproj-path: src/TestPrune.Analyzers/TestPrune.Analyzers.fsproj
+      # The analyzer's custom _AddAnalyzerToPackage pack target DependsOnTargets="Build",
+      # which collides with --no-build (NETSDK1085). Pack must run a full build.
+      no-build-pack: false
     permissions:
       contents: write
 
