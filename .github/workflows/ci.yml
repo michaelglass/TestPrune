@@ -17,3 +17,14 @@ jobs:
     with:
       solution: TestPrune.slnx
       fantomas-paths: 'src/ tests/ examples/'
+      # Run FSharpLint AND the fshw gate. The gate is what loads TestPrune.Analyzers
+      # (.fshw.json analyzers.paths) and runs it against TestPrune's own source, so a TP001
+      # violation fails the workflow here — a rule that only fires on one laptop is not
+      # enforced. `.fshw.json` sets "lint": false, so FSharpLint is still ours to run.
+      #
+      # Ordering is load-bearing: the reusable workflow's `Build` step (`dotnet build`,
+      # Debug) runs BEFORE this Lint step, so src/TestPrune.Analyzers/bin/Debug/net10.0/ is
+      # populated by the time the gate loads it. If it ever isn't, fshw raises a config
+      # error (exit 2) instead of silently analyzing nothing — the gate cannot go green
+      # with the analyzer unloaded.
+      lint-cmd: 'dotnet fsharplint lint TestPrune.slnx && dotnet fshw check --run-once'
