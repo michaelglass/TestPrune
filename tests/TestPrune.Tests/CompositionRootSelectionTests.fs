@@ -270,7 +270,7 @@ module ``recall is not regressed`` =
         test <@ affected = Set.ofList allTestNames @>
 
     [<Fact>]
-    let ``a startup-config change still selects every browser test (AUTOMATION-315)`` () =
+    let ``a startup-config change still selects every browser test`` () =
         // The reverted-AntiforgeryConfig case: every CSRF-protected POST 400s, and
         // the only thing that catches it is a browser test. Those tests reach the
         // config through app composition, so a naive terminator at the fixture
