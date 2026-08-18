@@ -27,4 +27,4 @@ jobs:
       # populated by the time the gate loads it. If it ever isn't, fshw raises a config
       # error (exit 2) instead of silently analyzing nothing — the gate cannot go green
       # with the analyzer unloaded.
-      lint-cmd: 'dotnet fsharplint lint TestPrune.slnx && dotnet fshw check --run-once'
+      lint-cmd: 'dotnet fsharplint lint TestPrune.slnx && dotnet fshw confirm --run-once'
