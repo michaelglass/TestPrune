@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 3.1.3 - 2026-08-19
+
+- AUTOMATION-366: a >] inside an attribute string must not truncate the block
+
+
 ## 3.1.2 - 2026-08-18
 
 - AUTOMATION-86: **a route with no path text of its own no longer matches the F#
