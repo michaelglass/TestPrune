@@ -6,6 +6,8 @@ on:
       - 'core-v*'
       - 'falco-v*'
       - 'analyzers-v*'
+      - 'sql-v*'
+      - 'sqlhydra-v*'
 
 jobs:
   release-core:
@@ -87,6 +89,64 @@ jobs:
   publish-falco:
     if: startsWith(github.ref, 'refs/tags/falco-v')
     needs: release-falco
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./artifacts
+      - name: Login to NuGet (Trusted Publishing)
+        id: nuget-login
+        uses: nuget/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Publish to NuGet
+        run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+  release-sql:
+    if: startsWith(github.ref, 'refs/tags/sql-v')
+    uses: michaelglass/MichaelsWackyFsPackageTools/.github/workflows/michaels-wacky-release.yml@main
+    with:
+      package-name: TestPrune.Sql
+      tag-prefix: sql-v
+      fsproj-path: src/TestPrune.Sql/TestPrune.Sql.fsproj
+    permissions:
+      contents: write
+
+  publish-sql:
+    if: startsWith(github.ref, 'refs/tags/sql-v')
+    needs: release-sql
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./artifacts
+      - name: Login to NuGet (Trusted Publishing)
+        id: nuget-login
+        uses: nuget/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Publish to NuGet
+        run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+  release-sqlhydra:
+    if: startsWith(github.ref, 'refs/tags/sqlhydra-v')
+    uses: michaelglass/MichaelsWackyFsPackageTools/.github/workflows/michaels-wacky-release.yml@main
+    with:
+      package-name: TestPrune.SqlHydra
+      tag-prefix: sqlhydra-v
+      fsproj-path: src/TestPrune.SqlHydra/TestPrune.SqlHydra.fsproj
+    permissions:
+      contents: write
+
+  publish-sqlhydra:
+    if: startsWith(github.ref, 'refs/tags/sqlhydra-v')
+    needs: release-sqlhydra
     runs-on: ubuntu-latest
     permissions:
       id-token: write
