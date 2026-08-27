@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- feat!: runtime-only behaviour coupling can now select the whole test project that
+  previously executed a changed file, even when no AST dependency reaches that
+  project (AUTOMATION-315). Selection reports the changed file and project as a
+  runtime-coverage source.
+
+- feat!: the first index after upgrading rebuilds `.test-prune.db`
+  (`SchemaVersion` 11 -> 12) to add project-attributed runtime coverage.
+
 - fix: `run` and `status` now carry every changed path into impact selection instead
   of discarding non-F# paths at the diff-parser boundary (AUTOMATION-223).
   `[<DependsOnFile>]` and `[<DependsOnGlob>]` therefore work end to end for snapshots,
