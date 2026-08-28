@@ -1,6 +1,11 @@
 # Changelog — TestPrune.SqlHydra
 
 ## [Unreleased]
+- AUTOMATION-558: classify the fully-qualified typed builder members emitted
+  for SqlHydra computation-expression custom operations, restoring read/write
+  facts that were lost when FCS stopped naming those uses after source keywords.
+  Declaring entities and generated-module prefixes are boundary-matched, blank
+  prefixes are rejected, and member-shaped dependencies cannot masquerade as tables.
 - fix: keep *every* SQL access a symbol performs, not just the first. `extractFacts`
   took `List.tryHead` over a symbol's DSL calls, so a symbol that both reads and
   writes (an upsert-style `select`-then-`insert`) was recorded with only one access

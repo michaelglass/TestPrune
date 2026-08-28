@@ -14,6 +14,25 @@ type AffectedTest =
     { TestProject: string
       TestClass: string }
 
+/// Source-level attribution evidence for one seeded route. This deliberately
+/// reports both answers the scanner produces: runnable test declarations and
+/// declarations which can carry a dependency edge (fixtures included). A
+/// source participant is not proof that its symbol resolved or an edge was
+/// emitted; inspect `ITestPruneExtension.AnalyzeEdges` for that separate claim.
+type RouteSourceAttributionDetail =
+    { Route: RouteHandlerEntry
+      TestClasses: string list
+      SourceParticipants: string list }
+
+/// Aggregate route-attribution coverage. Consumers can gate composition-root
+/// barriers on this report and document the entries in `Details` which have no
+/// direct source attribution instead of inferring coverage from a non-empty run.
+type RouteSourceAttributionCoverage =
+    { TotalRoutes: int
+      RoutesWithTestClasses: int
+      RoutesWithSourceParticipants: int
+      Details: RouteSourceAttributionDetail list }
+
 /// A top-level declaration (test class or test module) in a test file, carrying
 /// the text of its own span for per-declaration URL match attribution.
 type private DeclarationSpan =
@@ -56,10 +75,13 @@ type FalcoRouteExtension(integrationTestProject: string, integrationTestDir: str
     // Every source file under the repo, read once. Shared by the two additive resolvers below
     // (Falco.UnionRoutes case→URL links and plain string-route URL constants), so the repo is
     // walked and read a single time per extension instance rather than once per resolver.
-    let mutable repoFilesCache: (string * string) list option = None
+    let mutable repoFilesCache: Map<string, (string * string) list> = Map.empty
+    let mutable linkMapCache: Map<string, Map<string, Set<string>>> = Map.empty
+    let mutable testFilesCache: Map<string, string list> = Map.empty
+    let fileTextCache = System.Collections.Generic.Dictionary<string, string>()
 
     let getRepoFiles (repoRoot: string) : (string * string) list =
-        match repoFilesCache with
+        match repoFilesCache |> Map.tryFind repoRoot with
         | Some files -> files
         | None ->
             let files =
@@ -74,23 +96,100 @@ type FalcoRouteExtension(integrationTestProject: string, integrationTestDir: str
                 else
                     []
 
-            repoFilesCache <- Some files
+            repoFilesCache <- repoFilesCache |> Map.add repoRoot files
             files
 
     // Case → URL links for Falco.UnionRoutes symbolic navigation, derived once per repo from
     // the route DU's `[<Route(Path=...)>]` attributes (empty for plain string-route repos).
-    let mutable linkMapCache: Map<string, Set<string>> option = None
-
     let getLinkMap (repoRoot: string) : Map<string, Set<string>> =
-        match linkMapCache with
+        match linkMapCache |> Map.tryFind repoRoot with
         | Some m -> m
         | None ->
             let routeDuFiles =
                 getRepoFiles repoRoot |> List.filter (fun (_, text) -> text.Contains "[<Route(")
 
             let m = UnionRouteLinks.buildLinkMap routeDuFiles
-            linkMapCache <- Some m
+            linkMapCache <- linkMapCache |> Map.add repoRoot m
             m
+
+    let readFileCached (path: string) =
+        match fileTextCache.TryGetValue path with
+        | true, text -> text
+        | false, _ ->
+            let text = File.ReadAllText path
+            fileTextCache[path] <- text
+            text
+
+    /// Remove comments while preserving offsets and every string literal. A
+    /// triple-quoted string can be executable request data, so dropping it would
+    /// under-select; `urlPatternToRegex` separately prevents a parameter wildcard
+    /// spanning source lines/string delimiters into unrelated prose.
+    let routeSearchText (text: string) =
+        let chars = text.ToCharArray()
+
+        let erase start finish =
+            for i in start .. finish - 1 do
+                if chars[i] <> '\n' && chars[i] <> '\r' then
+                    chars[i] <- ' '
+
+        let mutable i = 0
+
+        while i < text.Length do
+            if i + 2 < text.Length && text[i] = '"' && text[i + 1] = '"' && text[i + 2] = '"' then
+                let close = text.IndexOf("\"\"\"", i + 3, System.StringComparison.Ordinal)
+                i <- if close < 0 then text.Length else close + 3
+            elif i + 1 < text.Length && text[i] = '/' && text[i + 1] = '/' then
+                let finish =
+                    match text.IndexOf('\n', i + 2) with
+                    | -1 -> text.Length
+                    | newline -> newline
+
+                erase i finish
+                i <- finish
+            elif i + 1 < text.Length && text[i] = '(' && text[i + 1] = '*' then
+                let start = i
+                let mutable depth = 1
+                i <- i + 2
+
+                while i < text.Length && depth > 0 do
+                    if i + 1 < text.Length && text[i] = '(' && text[i + 1] = '*' then
+                        depth <- depth + 1
+                        i <- i + 2
+                    elif i + 1 < text.Length && text[i] = '*' && text[i + 1] = ')' then
+                        depth <- depth - 1
+                        i <- i + 2
+                    else
+                        i <- i + 1
+
+                erase start i
+            elif i + 1 < text.Length && text[i] = '@' && text[i + 1] = '"' then
+                i <- i + 2
+                let mutable closed = false
+
+                while i < text.Length && not closed do
+                    if text[i] = '"' && i + 1 < text.Length && text[i + 1] = '"' then
+                        i <- i + 2
+                    elif text[i] = '"' then
+                        closed <- true
+                        i <- i + 1
+                    else
+                        i <- i + 1
+            elif text[i] = '"' then
+                i <- i + 1
+                let mutable closed = false
+
+                while i < text.Length && not closed do
+                    if text[i] = '\\' && i + 1 < text.Length then
+                        i <- i + 2
+                    elif text[i] = '"' then
+                        closed <- true
+                        i <- i + 1
+                    else
+                        i <- i + 1
+            else
+                i <- i + 1
+
+        System.String chars
 
     /// One `{param}` placeholder in a route pattern. Bound once because both readers of a
     /// route pattern strip placeholders — `carriesOnlySeparators` to see what literal text
@@ -110,7 +209,10 @@ type FalcoRouteExtension(integrationTestProject: string, integrationTestDir: str
         let placeholder = "__PARAM__"
         let withPlaceholders = routeParamPattern.Replace(urlPattern, placeholder)
         let escaped = Regex.Escape(withPlaceholders)
-        let pattern = escaped.Replace(placeholder, "[^/]+")
+        // A URL path segment cannot cross a source newline or string delimiter.
+        // Bounding the wildcard prevents a fragment in one literal from closing
+        // a match in unrelated multiline prose.
+        let pattern = escaped.Replace(placeholder, "[^/\r\n\"']+")
 
         // The opening boundary normally admits a `/` so a doubled separator still reads as a
         // path start. For a pattern with no literal text of its own that `/` pairs with the
@@ -140,10 +242,23 @@ type FalcoRouteExtension(integrationTestProject: string, integrationTestDir: str
         // `1` is none of those.
         Regex($"(?:%s{openingBoundary})%s{pattern}/?(?:[\"'?#\\s]|$)", RegexOptions.Compiled)
 
-    let classPattern = Regex(@"^type\s+(\w+)\s*\(", RegexOptions.Multiline)
+    // Top-level test declarations may carry an accessibility modifier, use an
+    // escaped identifier, or (for modules) use the file-module form without `=`.
+    // The old patterns silently ignored all three shapes, turning a real URL
+    // match into no attribution at all.
+    let classPattern =
+        Regex(
+            @"^type\s+(?:(?:private|internal|public)\s+)?(?<name>``[^`]+``|[\w']+)\s*(?:<[^>\r\n]*>\s*)?\(",
+            RegexOptions.Multiline
+        )
 
     let modulePattern =
-        Regex(@"^module\s+(?:``[^`]+``|[\w.]+\.)?(\w+)\s*=", RegexOptions.Multiline)
+        Regex(
+            @"^module\s+(?:(?:private|internal|public)\s+)?(?:[\w.]+\.)?(?<name>``[^`]+``|[\w']+)\s*(?:=.*|\r?$)",
+            RegexOptions.Multiline
+        )
+
+    let declarationName (m: Match) = m.Groups.["name"].Value.Trim('`')
 
     // AUTOMATION-366 — attribute blocks, scanned with STRING AWARENESS.
     //
@@ -307,15 +422,29 @@ type FalcoRouteExtension(integrationTestProject: string, integrationTestDir: str
         let perFile =
             testFiles
             |> List.map (fun testFile ->
-                let content = File.ReadAllText(testFile)
+                let content = readFileCached testFile
+                let searchableContent = routeSearchText content
 
-                if regexes |> List.exists (fun regex -> regex.IsMatch(content)) |> not then
+                if regexes |> List.exists (fun regex -> regex.IsMatch(searchableContent)) |> not then
                     [], []
                 else
                     let declarations =
-                        [ for m in classPattern.Matches(content) -> m.Index, m.Groups.[1].Value, true
-                          for m in modulePattern.Matches(content) -> m.Index, m.Groups.[1].Value, false ]
-                        |> List.sortBy (fun (start, _, _) -> start)
+                        let candidates =
+                            [ for m in classPattern.Matches(content) -> m.Index, declarationName m, true, true
+                              for m in modulePattern.Matches(content) ->
+                                  m.Index, declarationName m, false, m.Value.Contains('=') ]
+                            |> List.sortBy (fun (start, _, _, _) -> start)
+
+                        // `module Company.Tests` is the file's namespace-like
+                        // container. When classes/modules follow, shared lets in
+                        // that container belong to the conservative HEADER
+                        // fallback, not to an otherwise unresolvable synthetic
+                        // "declaration" edge. A module-only test file has no
+                        // child declaration, so it remains a selectable span.
+                        match candidates with
+                        | (_, _, false, false) :: _ :: _ -> candidates |> List.tail
+                        | _ -> candidates
+                        |> List.map (fun (start, name, isClass, _) -> start, name, isClass)
 
                     let spans =
                         declarations
@@ -327,7 +456,7 @@ type FalcoRouteExtension(integrationTestProject: string, integrationTestDir: str
 
                             { Name = name
                               IsClass = isClass
-                              Text = content.Substring(start, finish - start) })
+                              Text = searchableContent.Substring(start, finish - start) })
 
                     let matchesText (text: string) =
                         regexes |> List.exists (fun regex -> regex.IsMatch(text))
@@ -341,8 +470,8 @@ type FalcoRouteExtension(integrationTestProject: string, integrationTestDir: str
                     // matched on its own, like the spans above.
                     let headerText =
                         match declarations with
-                        | (firstStart, _, _) :: _ -> content.Substring(0, firstStart)
-                        | [] -> content
+                        | (firstStart, _, _) :: _ -> searchableContent.Substring(0, firstStart)
+                        | [] -> searchableContent
 
                     let matchesOutsideSelectable =
                         headerText :: (nonSelectable |> List.map (fun span -> span.Text))
@@ -382,19 +511,26 @@ type FalcoRouteExtension(integrationTestProject: string, integrationTestDir: str
           EdgeParticipants = perFile |> List.collect snd |> List.distinct }
 
     let findTestFiles (repoRoot: string) : string list =
-        let testDir = Path.Combine(repoRoot, integrationTestDir)
+        match testFilesCache |> Map.tryFind repoRoot with
+        | Some files -> files
+        | None ->
+            let testDir = Path.Combine(repoRoot, integrationTestDir)
 
-        if not (Directory.Exists(testDir)) then
-            []
-        else
-            // SafeWalk, never AllDirectories: the latter follows directory
-            // symlinks, and tests/*/bin holds Playwright's Nix-store browser
-            // symlinks — walking those reaches /nix/store's self-loop symlinks
-            // and never terminates (the 2026-07-13 wedge: fshw check hung 8h36m
-            // here, silently, without ever launching a test). SafeWalk also
-            // prunes bin/ and obj/ during traversal rather than filtering them
-            // out afterwards, so their subtrees are never entered at all.
-            SafeWalk.enumerateFiles "*.fs" testDir
+            let files =
+                if not (Directory.Exists(testDir)) then
+                    []
+                else
+                    // SafeWalk, never AllDirectories: the latter follows directory
+                    // symlinks, and tests/*/bin holds Playwright's Nix-store browser
+                    // symlinks — walking those reaches /nix/store's self-loop symlinks
+                    // and never terminates (the 2026-07-13 wedge: fshw check hung 8h36m
+                    // here, silently, without ever launching a test). SafeWalk also
+                    // prunes bin/ and obj/ during traversal rather than filtering them
+                    // out afterwards, so their subtrees are never entered at all.
+                    SafeWalk.enumerateFiles "*.fs" testDir |> List.sort
+
+            testFilesCache <- testFilesCache |> Map.add repoRoot files
+            files
 
     /// Find affected test classes using route-based matching.
     ///
@@ -443,6 +579,48 @@ type FalcoRouteExtension(integrationTestProject: string, integrationTestDir: str
             |> List.map (fun cls ->
                 { TestProject = integrationTestProject
                   TestClass = cls })
+
+    /// Measure scanner coverage over every route currently in the store.
+    /// This is intentionally source-level evidence: `RoutesWithSourceParticipants`
+    /// answers whether the scanner found a declaration to which AnalyzeEdges can
+    /// attach, while the final emitted-edge audit remains the symbol graph's job.
+    member _.MeasureSourceAttribution(repoRoot: string) : RouteSourceAttributionCoverage =
+        let testFiles = findTestFiles repoRoot
+
+        let details =
+            routeStore.GetAll()
+            |> List.sortBy (fun entry ->
+                entry.HandlerSourceFile,
+                entry.HandlerFunction |> Option.defaultValue "",
+                entry.HttpMethod,
+                entry.UrlPattern)
+            |> List.map (fun entry ->
+                let affectedUrls = Set.singleton entry.UrlPattern
+                let urlRegex = urlPatternToRegex entry.UrlPattern
+
+                let leafRegexes =
+                    UnionRouteLinks.leafReferenceRegexes (getLinkMap repoRoot) affectedUrls
+
+                let constantRegexes =
+                    let constantMap =
+                        StringRouteConstants.buildConstantMap (getRepoFiles repoRoot) affectedUrls
+
+                    StringRouteConstants.constantReferenceRegexes constantMap [ urlRegex ]
+
+                let routeMatch =
+                    matchDeclarationsInFiles testFiles (urlRegex :: (leafRegexes @ constantRegexes))
+
+                { Route = entry
+                  TestClasses = routeMatch.TestClasses |> List.sort
+                  SourceParticipants = routeMatch.EdgeParticipants |> List.sort })
+
+        { TotalRoutes = details.Length
+          RoutesWithTestClasses = details |> List.filter (fun d -> not d.TestClasses.IsEmpty) |> List.length
+          RoutesWithSourceParticipants =
+            details
+            |> List.filter (fun d -> not d.SourceParticipants.IsEmpty)
+            |> List.length
+          Details = details }
 
     interface ITestPruneExtension with
         member _.Name = "Falco Routes"

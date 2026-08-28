@@ -448,6 +448,51 @@ module ``changed handler file returns affected test classes`` =
                                      TestClass = "UsersTests" } ]
                     @>)
 
+let private interventionTestCase i =
+    match i with
+    | 1 ->
+        "H1Tests.fs",
+        "H1Tests",
+        "type H1Tests() =\n    [<Fact>]\n    member _.Exercises() = ignore \"/intervention/1\"\n"
+    | 2 ->
+        "H2Tests.fs",
+        "H2Tests",
+        "type internal H2Tests() =\n    [<Fact>]\n    member _.Exercises() = ignore \"/intervention/2\"\n"
+    | 3 ->
+        "H3Tests.fs",
+        "H3Tests",
+        "type public H3Tests() =\n    [<Fact>]\n    member _.Exercises() = ignore \"/intervention/3\"\n"
+    | 4 ->
+        "H4Tests.fs",
+        "H4Tests",
+        "type private H4Tests() =\n    [<Fact>]\n    member _.Exercises() = ignore \"/intervention/4\"\n"
+    | 5 ->
+        "H5Tests.fs",
+        "H5 contract",
+        "type ``H5 contract``() =\n    [<Fact>]\n    member _.Exercises() = ignore \"/intervention/5\"\n"
+    | 6 ->
+        "H6Tests.fs",
+        "H6Tests",
+        "type H6Tests<'T>() =\n    [<Fact>]\n    member _.Exercises() = ignore \"/intervention/6\"\n"
+    | 7 ->
+        "H7Tests.fs", "H7Tests", "module H7Tests =\n    [<Fact>]\n    let Exercises () = ignore \"/intervention/7\"\n"
+    | 8 ->
+        "H8Tests.fs",
+        "H8Tests",
+        "module Company.Product.H8Tests\n\n[<Fact>]\nlet Exercises () = ignore \"/intervention/8\"\n"
+    | 9 ->
+        "H9Tests.fs",
+        "H9Tests",
+        "type H9Tests() =\n    inherit ContractTests()\n    member _.Exercises() = ignore \"/intervention/9\"\n"
+    | 10 ->
+        "H10Tests.fs",
+        "H10Tests",
+        "type H10Tests() =\n    [<SkippableFact>]\n    member _.Exercises() = ignore \"/intervention/10\"\n"
+    | _ -> invalidArg (nameof i) "The intervention corpus has exactly ten cases."
+
+let private falsePositiveRouteText =
+    "type FalsePositiveTests() =\n    // Example only: GET /intervention/1\n    let docs = \"\"\"curl /intervention/\n2\"\"\"\n    [<Fact>]\n    member _.Unrelated() = ()\n"
+
 module ``changed handler with module-style test file`` =
 
     [<Fact>]
@@ -472,6 +517,144 @@ module ``changed handler with module-style test file`` =
                         result = [ { TestProject = "IntTests"
                                      TestClass = "UsersTests" } ]
                     @>)
+
+    [<Fact>]
+    let ``file-module test is found when URL matches`` () =
+        let testContent =
+            "module Company.Product.UsersTests\n\n[<Fact>]\nlet ``gets a user`` () =\n    let url = \"/api/users/123\"\n    ()\n"
+
+        withTestSetup
+            [ { UrlPattern = "/api/users/{id}"
+                HttpMethod = "GET"
+                HandlerSourceFile = "src/Handlers/Users.fs"
+                HandlerFunction = None } ]
+            [ ("UsersTests.fs", testContent) ]
+            "IntTests"
+            "tests/IntTests"
+            [ "src/Handlers/Users.fs" ]
+            (fun result ->
+                test
+                    <@
+                        result = [ { TestProject = "IntTests"
+                                     TestClass = "UsersTests" } ]
+                    @>)
+
+    [<Fact>]
+    let ``internal escaped test class is found when URL matches`` () =
+        let testContent =
+            "type internal ``Users contract``() =\n    [<Fact>]\n    member _.GetUser() =\n        let url = \"/api/users/123\"\n        ()\n"
+
+        withTestSetup
+            [ { UrlPattern = "/api/users/{id}"
+                HttpMethod = "GET"
+                HandlerSourceFile = "src/Handlers/Users.fs"
+                HandlerFunction = None } ]
+            [ ("UsersTests.fs", testContent) ]
+            "IntTests"
+            "tests/IntTests"
+            [ "src/Handlers/Users.fs" ]
+            (fun result ->
+                test
+                    <@
+                        result = [ { TestProject = "IntTests"
+                                     TestClass = "Users contract" } ]
+                    @>)
+
+module ``route attribution coverage`` =
+
+    [<Fact>]
+    let ``ten-handler intervention reports every exercising test and the one explicit gap`` () =
+        let tempDir = createTempDir ()
+
+        try
+            let db = Database.create (Path.Combine(tempDir, "test.db"))
+            let routeStore = RouteStore(toPluginStore db)
+
+            let attributedRoutes =
+                [ for i in 1..10 ->
+                      { UrlPattern = $"/intervention/%d{i}"
+                        HttpMethod = "GET"
+                        HandlerSourceFile = $"src/Handlers/H%d{i}.fs"
+                        HandlerFunction = Some $"H%d{i}.handle" } ]
+
+            let documentedGap =
+                { UrlPattern = "/intervention/click-only"
+                  HttpMethod = "POST"
+                  HandlerSourceFile = "src/Handlers/ClickOnly.fs"
+                  HandlerFunction = Some "ClickOnly.handle" }
+
+            routeStore.Rebuild(attributedRoutes @ [ documentedGap ])
+
+            let testDir = Path.Combine(tempDir, "tests/IntTests")
+            Directory.CreateDirectory(testDir) |> ignore
+
+            for i in 1..10 do
+                let fileName, _, content = interventionTestCase i
+
+                File.WriteAllText(Path.Combine(testDir, fileName), content)
+
+            let extension = FalcoRouteExtension("IntTests", "tests/IntTests", routeStore)
+            let coverage = extension.MeasureSourceAttribution(tempDir)
+
+            test <@ coverage.TotalRoutes = 11 @>
+            test <@ coverage.RoutesWithTestClasses = 10 @>
+            test <@ coverage.RoutesWithSourceParticipants = 10 @>
+
+            let reportedKeys =
+                coverage.Details
+                |> List.map (fun detail ->
+                    detail.Route.HandlerSourceFile,
+                    detail.Route.HandlerFunction |> Option.defaultValue "",
+                    detail.Route.HttpMethod,
+                    detail.Route.UrlPattern)
+
+            test <@ reportedKeys = List.sort reportedKeys @>
+
+            test
+                <@
+                    coverage.Details
+                    |> List.forall (fun detail -> detail.TestClasses = List.sort detail.TestClasses)
+                @>
+
+            test
+                <@
+                    coverage.Details
+                    |> List.forall (fun detail -> detail.SourceParticipants = List.sort detail.SourceParticipants)
+                @>
+
+            let gaps =
+                coverage.Details
+                |> List.filter (fun d -> d.SourceParticipants.IsEmpty)
+                |> List.map (fun d -> d.Route.HandlerSourceFile)
+
+            test <@ gaps = [ "src/Handlers/ClickOnly.fs" ] @>
+
+            for route in attributedRoutes do
+                let selected =
+                    extension.FindAffectedTestClasses([ route.HandlerSourceFile ], tempDir)
+
+                test <@ selected.Length = 1 @>
+
+            // The report is deterministic and a second call performs no new
+            // directory walk/file read: deleting the source corpus after the
+            // first measurement cannot perturb this extension instance.
+            Directory.Delete(testDir, true)
+            test <@ extension.MeasureSourceAttribution(tempDir) = coverage @>
+        finally
+            cleanupDir tempDir
+
+    [<Fact>]
+    let ``route examples in comments and split multiline prose are not source attribution`` () =
+        withTestSetup
+            [ { UrlPattern = "/intervention/{id}"
+                HttpMethod = "GET"
+                HandlerSourceFile = "src/Handlers/Users.fs"
+                HandlerFunction = None } ]
+            [ ("FalsePositiveTests.fs", falsePositiveRouteText) ]
+            "IntTests"
+            "tests/IntTests"
+            [ "src/Handlers/Users.fs" ]
+            (fun result -> test <@ List.isEmpty result @>)
 
 module ``no matching URL in test files returns empty`` =
 
@@ -1489,6 +1672,43 @@ let private ordersTestFile =
     "type OrdersTests() =\n    [<Fact>]\n    member _.GetOrder() =\n        let url = \"/api/orders/456\"\n        ()\n"
 
 module ``AnalyzeEdges function-scoped routes`` =
+
+    [<Fact>]
+    let ``ten-handler intervention emits one direct exercising-test edge per handler`` () =
+        let routes =
+            [ for i in 1..10 ->
+                  { UrlPattern = $"/intervention/%d{i}"
+                    HttpMethod = "GET"
+                    HandlerSourceFile = $"src/Handlers/H%d{i}.fs"
+                    HandlerFunction = Some $"H%d{i}.handle" } ]
+
+        let symbols =
+            [ for i in 1..10 do
+                  let _, declaration, _ = interventionTestCase i
+                  fn $"App.Handlers.H%d{i}.handle" $"src/Handlers/H%d{i}.fs"
+                  fn $"App.Tests.%s{declaration}.Exercises" $"tests/IntTests/H%d{i}Tests.fs"
+
+              fn "App.Tests.FalsePositiveTests.Unrelated" "tests/IntTests/FalsePositiveTests.fs" ]
+
+        let testFiles =
+            [ for i in 1..10 do
+                  let fileName, _, content = interventionTestCase i
+                  fileName, content
+
+              "FalsePositiveTests.fs", falsePositiveRouteText ]
+
+        withAnalyzeEdges routes symbols testFiles (routes |> List.map (fun r -> r.HandlerSourceFile)) (fun edges ->
+            let pairs = edges |> List.map (fun e -> e.FromSymbol, e.ToSymbol) |> Set.ofList
+
+            let expected =
+                [ for i in 1..10 do
+                      let _, declaration, _ = interventionTestCase i
+                      $"App.Tests.%s{declaration}.Exercises", $"App.Handlers.H%d{i}.handle" ]
+                |> Set.ofList
+
+            test <@ pairs = expected @>
+            test <@ pairs |> Set.exists (fun (source, _) -> source.Contains("FalsePositive")) |> not @>
+            test <@ edges |> List.forall (fun e -> e.Kind = SharedState && e.Source = "falco") @>)
 
     /// A change to a multi-route handler file, with each route mapped to its own
     /// handler function, links each route's tests ONLY to that route's function —

@@ -1,5 +1,6 @@
 module TestPrune.Tests.SqlHydraAnalyzerTests
 
+open System
 open Xunit
 open Swensen.Unquote
 open TestPrune
@@ -39,6 +40,40 @@ module ``DSL context classification`` =
     let ``unknown context returns None`` () =
         test <@ SqlHydraAnalyzer.classifyDslContext "someOtherFunction" = None @>
 
+    [<Theory>]
+    [<InlineData("SqlHydra.Query.SelectBuilders.SelectBuilder`2.Where")>]
+    [<InlineData("SqlHydra.Query.SelectBuilders.SelectBuilder`2.Select")>]
+    let ``typed select builder custom operations are read access`` symbol =
+        test <@ SqlHydraAnalyzer.classifyDslContext symbol = Some Read @>
+
+    [<Theory>]
+    [<InlineData("SqlHydra.Query.InsertBuilders.InsertBuilder`1.Entity")>]
+    [<InlineData("SqlHydra.Query.UpdateBuilders.UpdateBuilder`1.Set")>]
+    [<InlineData("SqlHydra.Query.DeleteBuilders.DeleteBuilder`1.Where")>]
+    let ``typed mutation builder custom operations are write access`` symbol =
+        test <@ SqlHydraAnalyzer.classifyDslContext symbol = Some Write @>
+
+    [<Fact>]
+    let ``similarly named custom operation outside SqlHydra is ignored`` () =
+        test <@ SqlHydraAnalyzer.classifyDslContext "Other.Query.SelectBuilder.Where" = None @>
+
+    [<Theory>]
+    [<InlineData("FakeSqlHydra.Query.SelectBuilders.SelectBuilder`2.Where")>]
+    [<InlineData("SqlHydra.Query.SelectBuilders.SelectBuilderFake`2.Where")>]
+    [<InlineData("Prefix.SqlHydra.Query.InsertBuilders.InsertBuilder`2.Entity")>]
+    [<InlineData("SqlHydra.Query.UpdateBuilders.FakeUpdateBuilder`2.Set")>]
+    [<InlineData("SqlHydra.Query.DeleteBuilders.DeleteBuilderFake`1.Where")>]
+    [<InlineData("Fake.SqlHydra.Query.selectTask")>]
+    let ``near-prefix suffix and Fake declaring entities are ignored`` symbol =
+        test <@ SqlHydraAnalyzer.classifyDslContext symbol = None @>
+
+    [<Fact>]
+    let ``fully qualified terminal helper with generic arity is classified`` () =
+        let result =
+            SqlHydraAnalyzer.classifyDslContext "SqlHydra.Query.InsertBuilders.insertTask``3"
+
+        test <@ result = Some Write @>
+
 module ``Table reference parsing`` =
 
     [<Fact>]
@@ -66,6 +101,35 @@ module ``Table reference parsing`` =
                     { Schema = "public"
                       Table = "articles" }
             @>
+
+    [<Fact>]
+    let ``prefix-aware parser requires exact schema-table suffix`` () =
+        let exact =
+            SqlHydraAnalyzer.parseTableReferenceUnder "Generated" "MyDb.Generated.public.articles"
+
+        let memberShaped =
+            SqlHydraAnalyzer.parseTableReferenceUnder "Generated" "MyDb.Generated.public.articles.title"
+
+        let nearPrefix =
+            SqlHydraAnalyzer.parseTableReferenceUnder "Generated" "MyDb.NotGenerated.public.articles"
+
+        let emptySchema =
+            SqlHydraAnalyzer.parseTableReferenceUnder "Generated" "MyDb.Generated..articles"
+
+        let emptyTable =
+            SqlHydraAnalyzer.parseTableReferenceUnder "Generated" "MyDb.Generated.public."
+
+        test
+            <@
+                exact = Some
+                    { Schema = "public"
+                      Table = "articles" }
+            @>
+
+        test <@ memberShaped = None @>
+        test <@ nearPrefix = None @>
+        test <@ emptySchema = None @>
+        test <@ emptyTable = None @>
 
 module ``SqlHydraExtension graph analysis`` =
 
@@ -213,9 +277,9 @@ module ``SqlHydraExtension graph analysis`` =
 
         let store = InMemoryStore.fromAnalysisResults [ result ]
         let extension = SqlHydraExtension("Generated")
+        test <@ (extension :> ITestPruneExtension).Name = "SqlHydra" @>
 
-        let edges =
-            (extension :> TestPrune.Extensions.ITestPruneExtension).AnalyzeEdges store [] ""
+        let edges = (extension :> ITestPruneExtension).AnalyzeEdges store [] ""
 
         test <@ edges.Length = 1 @>
         test <@ edges[0].Kind = SharedState @>
@@ -295,7 +359,130 @@ let private usesType (source: string) (dest: string) : Dependency =
       Kind = UsesType
       Source = "core" }
 
+[<Collection("FCS-AstAnalyzer")>]
+module ``real FCS custom-operation shape`` =
+
+    [<Fact>]
+    let ``custom operation resolves to its typed builder member and record type`` () =
+        let result =
+            TestPrune.Tests.AstAnalyzerTests.analyze
+                """
+module SqlHydra.Query.SelectBuilders
+
+type articles = { id: int }
+
+type SelectBuilder<'T>() =
+    member _.For(source: 'T list, body: 'T -> 'T list) = List.collect body source
+    member _.Yield(value: 'T) = [ value ]
+
+    [<CustomOperation("where", MaintainsVariableSpace = true)>]
+    member _.Where(source: 'T list, [<ProjectionParameter>] predicate: 'T -> bool) =
+        List.filter predicate source
+
+    [<CustomOperation("select")>]
+    member _.Select(source: 'T list, [<ProjectionParameter>] projection: 'T -> 'T) =
+        List.map projection source
+
+let select = SelectBuilder<articles>()
+
+let query () =
+    select {
+        for row in [ { id = 1 } ] do
+        where (row.id = 1)
+        select row
+    }
+"""
+
+        let queryDeps =
+            result.Dependencies
+            |> List.filter (fun dependency -> dependency.FromSymbol.EndsWith(".query", StringComparison.Ordinal))
+
+        let whereCall =
+            queryDeps
+            |> List.tryFind (fun dependency ->
+                dependency.Kind = Calls
+                && dependency.ToSymbol = "SqlHydra.Query.SelectBuilders.SelectBuilder`1.Where")
+
+        test <@ whereCall.IsSome @>
+
+        test
+            <@
+                whereCall
+                |> Option.bind (fun dependency -> SqlHydraAnalyzer.classifyDslContext dependency.ToSymbol) = Some Read
+            @>
+
+        test
+            <@
+                queryDeps
+                |> List.exists (fun dependency ->
+                    dependency.Kind = UsesType
+                    && dependency.ToSymbol = "SqlHydra.Query.SelectBuilders.articles")
+            @>
+
 module ``SqlHydra edge scoping`` =
+
+    [<Fact>]
+    let ``detects read from the typed custom-operation symbol emitted by current FCS`` () =
+        let result =
+            AnalysisResult.Create(
+                [ fn "Queries.getArticles" "src/Queries.fs"
+                  dsl "SqlHydra.Query.SelectBuilders.SelectBuilder`2.Where"
+                  table "Generated.public.articles" ],
+                [ calls "Queries.getArticles" "SqlHydra.Query.SelectBuilders.SelectBuilder`2.Where"
+                  usesType "Queries.getArticles" "Generated.public.articles" ],
+                []
+            )
+
+        let store = InMemoryStore.fromAnalysisResults [ result ]
+        let facts = SqlHydraExtension.extractFacts "Generated" store
+        test <@ facts |> List.map (fun f -> f.Table, f.Access) = [ "articles", Read ] @>
+
+    [<Fact>]
+    let ``apostrophe-bearing real SqlHydra member name remains a read`` () =
+        let result =
+            SqlHydraAnalyzer.classifyDslContext "SqlHydra.Query.SelectBuilders.SelectBuilder`2.LeftJoin'"
+
+        test <@ result = Some Read @>
+
+    [<Fact>]
+    let ``generated prefix is a dotted module boundary rather than a substring`` () =
+        let result =
+            AnalysisResult.Create(
+                [ fn "Queries.getArticles" "src/Queries.fs"
+                  dsl "SqlHydra.Query.SelectBuilders.SelectBuilder`2.Where"
+                  table "NotGenerated.public.articles"
+                  table "GeneratedFake.public.articles" ],
+                [ calls "Queries.getArticles" "SqlHydra.Query.SelectBuilders.SelectBuilder`2.Where"
+                  usesType "Queries.getArticles" "NotGenerated.public.articles"
+                  usesType "Queries.getArticles" "GeneratedFake.public.articles" ],
+                []
+            )
+
+        let store = InMemoryStore.fromAnalysisResults [ result ]
+        test <@ SqlHydraExtension.extractFacts "Generated" store |> List.isEmpty @>
+
+    [<Fact>]
+    let ``table member-shaped dependency is not misread as schema and table`` () =
+        let result =
+            AnalysisResult.Create(
+                [ fn "Queries.getArticles" "src/Queries.fs"
+                  dsl "SqlHydra.Query.SelectBuilders.SelectBuilder`2.Where"
+                  table "Generated.public.articles.title" ],
+                [ calls "Queries.getArticles" "SqlHydra.Query.SelectBuilders.SelectBuilder`2.Where"
+                  usesType "Queries.getArticles" "Generated.public.articles.title" ],
+                []
+            )
+
+        let store = InMemoryStore.fromAnalysisResults [ result ]
+        test <@ SqlHydraExtension.extractFacts "Generated" store |> List.isEmpty @>
+
+    [<Fact>]
+    let ``blank generated module prefix is rejected by constructor and extractor`` () =
+        let store = InMemoryStore.fromAnalysisResults []
+        raises<ArgumentException> <@ SqlHydraExtension("   ") @>
+        raises<ArgumentException> <@ SqlHydraExtension.extractFacts "" store @>
+
+        raises<ArgumentException> <@ SqlHydraAnalyzer.parseTableReferenceUnder "\t" "Generated.public.articles" @>
 
     /// The FalcoRoute cross-product bug is NOT present here.
     /// `extractFacts` filters each symbol's dependencies to `d.FromSymbol = sym.FullName`,

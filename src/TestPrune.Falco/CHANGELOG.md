@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- AUTOMATION-558: expose per-route source-attribution coverage, recognise
+  file-module tests, accessibility modifiers, escaped identifiers, and generic
+  test classes, ignore route examples in comments/multiline prose, cache the
+  repository scan, and pin direct edge attribution with a ten-handler intervention.
+
 ## 3.1.3 - 2026-08-19
 
 - AUTOMATION-366: a >] inside an attribute string must not truncate the block
