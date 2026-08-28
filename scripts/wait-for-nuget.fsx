@@ -65,7 +65,9 @@ let singleProjectValue (project: XDocument) projectPath elementName =
     with
     | [ value ] -> Ok value
     | [] -> Error $"%s{projectPath} has no readable <%s{elementName}>"
-    | values -> Error $"%s{projectPath} has ambiguous <%s{elementName}> values: %s{String.concat ", " values}"
+    | values ->
+        let renderedValues = String.concat ", " values
+        Error $"%s{projectPath} has ambiguous <%s{elementName}> values: %s{renderedValues}"
 
 let processOutput (task: Threading.Tasks.Task<string>) =
     if task.Wait(TimeSpan.FromSeconds 5.) then task.Result.Trim() else "output drain did not finish within 5s"
@@ -244,4 +246,4 @@ match result with
 | Ok message -> printfn "%s" message
 | Error error ->
     eprintfn "NuGet publication barrier failed: %s" error
-    Environment.ExitCode <- 1
+    Environment.Exit 1
