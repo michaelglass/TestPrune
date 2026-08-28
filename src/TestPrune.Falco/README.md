@@ -72,6 +72,11 @@ let extension =
 // Affected test classes, directly:
 let affected = extension.FindAffectedTestClasses(changedFiles, repoRoot)
 // -> [{ TestProject = "MyApp.IntegrationTests"; TestClass = "UsersTests" }]
+
+// Deterministic source-scan audit for every seeded route:
+let sourceCoverage = extension.MeasureSourceAttribution(repoRoot)
+// Inspect Details and document every route with no SourceParticipants before
+// enabling a composition-root barrier.
 ```
 
 To feed those couplings into TestPrune's dependency graph instead, use
@@ -83,6 +88,15 @@ let edges =
         .AnalyzeEdges (toSymbolStore db) changedFiles repoRoot
 // -> Dependency list (test symbol -> handler symbol, kind SharedState)
 ```
+
+`MeasureSourceAttribution` is deliberately not an emitted-edge metric. It proves
+that source declarations name a route; `AnalyzeEdges` additionally depends on
+those declaration and handler names resolving in the indexed symbol graph. Audit
+the returned `Dependency list` when you need proof of emitted edges.
+
+An extension instance caches the repository walk, test-file list and file text.
+Reuse it for a complete audit instead of constructing one instance per route.
+The public coverage report and every name list in it are deterministically sorted.
 
 ## How it works
 
