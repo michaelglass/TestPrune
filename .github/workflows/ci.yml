@@ -28,3 +28,8 @@ jobs:
       # error (exit 2) instead of silently analyzing nothing — the gate cannot go green
       # with the analyzer unloaded.
       lint-cmd: 'dotnet fsharplint lint TestPrune.slnx && dotnet fshw confirm --run-once'
+
+  lint-project:
+    uses: michaelglass/MichaelsWackyFsPackageTools/.github/workflows/michaels-wacky-lint-project.yml@main
+    permissions:
+      contents: read
