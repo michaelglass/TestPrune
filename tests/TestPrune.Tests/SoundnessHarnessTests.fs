@@ -31,14 +31,14 @@ module TestPrune.Tests.SoundnessHarnessTests
 //     grades the store's transitive closure and `selectTests`' plumbing. It does
 //     NOT grade extraction: `analyzeSource` is never called, so a binding form
 //     the analyzer fails to see is absent from both the store AND the oracle,
-//     and is structurally invisible here (AUTOMATION-223). Saying it grades
+//     and is structurally invisible here. Saying it grades
 //     "impact selection" would overclaim.
 //
 //   • The EXTRACTION-INCLUSIVE property (further down) closes exactly that gap:
 //     it emits real F# SOURCE, runs it through `analyzeSource`, and takes its
 //     oracle from the GENERATION PLAN rather than from anything the analyzer
 //     produced. A symbol or edge the analyzer drops therefore shows up as
-//     under-selection — the AUTOMATION-268 bug class, which the graph layer
+//     under-selection — the extraction bug class, which the graph layer
 //     cannot reach.
 //
 // See "Not covered yet" at the bottom of this file.
@@ -341,7 +341,7 @@ let ``soundness: RunAll is always sound`` () =
 // The composition-root barrier, held to the same one-sided standard
 // ---------------------------------------------------------------------------
 //
-// `[<TestPrune.CompositionRoot>]` (AUTOMATION-86) is the first feature that makes
+// `[<TestPrune.CompositionRoot>]` is the first feature that makes
 // selection NARROWER, so it is the first that can under-select. The property
 // above already covers the un-annotated case — every corpus it generates carries
 // no attributes, so its 200 cases now double as proof that an un-annotated repo
@@ -511,7 +511,7 @@ let ``soundness: the barrier property detects a marker that blocks a seed change
         test <@ Set.isEmpty (Set.difference viaSeed selected) @>
 
 // ---------------------------------------------------------------------------
-// Extraction-inclusive soundness (AUTOMATION-223 rework)
+// Extraction-inclusive soundness
 // ---------------------------------------------------------------------------
 //
 // The property above compares a store built from a hand-constructed
@@ -519,7 +519,8 @@ let ``soundness: the barrier property detects a marker that blocks a seed change
 // makes it blind in one specific, important direction: if `analyzeSource` fails
 // to extract a symbol or an edge for some binding form, the edge is missing from
 // the store and equally missing from the oracle, so the two agree and the case
-// passes. Every binding form AUTOMATION-271 found broken would sail through it.
+// passes. Every binding form the binding-form audit found broken would sail
+// through it.
 //
 // This section removes that blindness the only way it can be removed: the corpus
 // becomes REAL F# SOURCE, it is analysed by the REAL analyzer, and the oracle is
@@ -782,7 +783,7 @@ module ``Extraction-inclusive soundness`` =
     let ``the extraction harness detects a dropped dependency edge`` () =
         // Proof the property above can FAIL. Without this, a green run is equally
         // consistent with "extraction is sound" and "the comparison never ran" —
-        // which is precisely the criticism that put AUTOMATION-223 in QA Failed.
+        // which is precisely the criticism that sent the first harness back.
         //
         // Dropping an edge the analyzer DID extract simulates one it failed to
         // extract: the plan still contains it, so the oracle still expects the
@@ -820,9 +821,9 @@ module ``Extraction-inclusive soundness`` =
 //   through the real analyzer, so it CAN see an extraction miss — but it can only
 //   see one in a form it actually emits, and the generator emits plain
 //   `let f () = g () + 1` module bindings. Operators, active patterns, interface
-//   members, computation expressions and the rest of the shapes AUTOMATION-271
-//   enumerated are not generated, so a defect confined to one of those is still
+//   members, computation expressions and the rest of the shapes the binding-form
+//   audit enumerated are not generated, so a defect confined to one of those is still
 //   invisible. Widening the generator's repertoire is the direct next step, and
-//   it is the step that would have caught AUTOMATION-268/271 outright; it is
+//   it is the step that would have caught those extraction defects outright; it is
 //   listed here rather than claimed, because a harness that overstates its reach
 //   is the exact failure this file exists to avoid.
