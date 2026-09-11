@@ -49,6 +49,7 @@
     <Compile Include="UnqualifiedNameAuditTests.fs" />
     <Compile Include="ParseDiagnosticSeverityTests.fs" />
     <Compile Include="DatabaseTests.fs" />
+    <Compile Include="CoveringProjectsTests.fs" />
     <Compile Include="CoverageTests.fs" />
     <Compile Include="CoreReleaseSemanticsTests.fs" />
     <Compile Include="CoverageImpactTests.fs" />
