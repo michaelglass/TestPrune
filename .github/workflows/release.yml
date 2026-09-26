@@ -8,6 +8,7 @@ on:
       - 'analyzers-v*'
       - 'sql-v*'
       - 'sqlhydra-v*'
+      - 'trace-v*'
 
 jobs:
   release-core:
@@ -147,6 +148,38 @@ jobs:
   publish-sqlhydra:
     if: startsWith(github.ref, 'refs/tags/sqlhydra-v')
     needs: release-sqlhydra
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: nuget-packages
+          path: ./artifacts
+      - name: Login to NuGet (Trusted Publishing)
+        id: nuget-login
+        uses: nuget/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Publish to NuGet
+        run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+  # One tag for the recorder, the weaver/tooling and the measurement CLI: the weaver
+  # emits calls to recorder methods by name, so the three must never ship apart.
+  release-trace:
+    if: startsWith(github.ref, 'refs/tags/trace-v')
+    uses: michaelglass/MichaelsWackyFsPackageTools/.github/workflows/michaels-wacky-release.yml@main
+    with:
+      package-name: TestPrune.Trace
+      tag-prefix: trace-v
+      fsproj-path: src/TestPrune.Trace/TestPrune.Trace.fsproj
+      extra-fsproj-paths: 'src/TestPrune.Trace.Recorder/TestPrune.Trace.Recorder.fsproj,src/TestPrune.Trace.Cli/TestPrune.Trace.Cli.fsproj'
+    permissions:
+      contents: write
+
+  publish-trace:
+    if: startsWith(github.ref, 'refs/tags/trace-v')
+    needs: release-trace
     runs-on: ubuntu-latest
     permissions:
       id-token: write

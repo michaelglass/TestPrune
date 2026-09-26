@@ -1,4 +1,4 @@
-<!-- sync:testprune-trace-readme:start -->
+<!-- sync:testprune-trace-readme -->
 # TestPrune.Trace
 
 Records which code each test actually executed, so that test selection can later be
