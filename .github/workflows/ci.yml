@@ -16,6 +16,12 @@ jobs:
     uses: michaelglass/MichaelsWackyFsPackageTools/.github/workflows/michaels-wacky-build.yml@main
     with:
       solution: TestPrune.slnx
+      # Same SDK feature band as global.json. Branch coverage counts depend on
+      # the F# compiler, which changes per band (10.0.3xx and 10.0.4xx instrument
+      # different branch totals for identical code). Keeping Linux CI and local
+      # macOS on one band keeps both platforms' floors measuring the same thing.
+      # Move both together, and re-measure the floors when you do.
+      dotnet-version: '10.0.4xx'
       fantomas-paths: 'src/ tests/ examples/'
       # Run FSharpLint AND the fshw gate. The gate is what loads TestPrune.Analyzers
       # (.fshw.json analyzers.paths) and runs it against TestPrune's own source, so a TP001
