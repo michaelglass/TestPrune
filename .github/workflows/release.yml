@@ -38,7 +38,7 @@ jobs:
           path: ./artifacts
       - name: Login to NuGet (Trusted Publishing)
         id: nuget-login
-        uses: nuget/login@v1
+        uses: nuget/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
         with:
           user: ${{ vars.NUGET_USER }}
       - name: Publish to NuGet
@@ -71,7 +71,7 @@ jobs:
           path: ./artifacts
       - name: Login to NuGet (Trusted Publishing)
         id: nuget-login
-        uses: nuget/login@v1
+        uses: nuget/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
         with:
           user: ${{ vars.NUGET_USER }}
       - name: Publish to NuGet
@@ -100,7 +100,7 @@ jobs:
           path: ./artifacts
       - name: Login to NuGet (Trusted Publishing)
         id: nuget-login
-        uses: nuget/login@v1
+        uses: nuget/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
         with:
           user: ${{ vars.NUGET_USER }}
       - name: Publish to NuGet
@@ -129,7 +129,7 @@ jobs:
           path: ./artifacts
       - name: Login to NuGet (Trusted Publishing)
         id: nuget-login
-        uses: nuget/login@v1
+        uses: nuget/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
         with:
           user: ${{ vars.NUGET_USER }}
       - name: Publish to NuGet
@@ -158,7 +158,7 @@ jobs:
           path: ./artifacts
       - name: Login to NuGet (Trusted Publishing)
         id: nuget-login
-        uses: nuget/login@v1
+        uses: nuget/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
         with:
           user: ${{ vars.NUGET_USER }}
       - name: Publish to NuGet
@@ -190,7 +190,7 @@ jobs:
           path: ./artifacts
       - name: Login to NuGet (Trusted Publishing)
         id: nuget-login
-        uses: nuget/login@v1
+        uses: nuget/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
         with:
           user: ${{ vars.NUGET_USER }}
       - name: Publish to NuGet
