@@ -77,3 +77,6 @@ benchmarks/results/
 
 # Scratch copies of fixture builds made by the weaver tests
 tests/TraceFixtures/bin-scratch/
+
+# ci-linux: logs, coverage and fshw test runs of the local Linux CI container (scripts/ci-linux.sh)
+.ci-linux/

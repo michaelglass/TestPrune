@@ -165,6 +165,15 @@ description = "Run all CI checks (no auto-fix)"
 run = "dotnet fshw confirm --run-once"
 depends = ["build", "tool-restore", "lint", "lint-project", "coverage-check", "sync-docs-check", "docs", "example-build", "package-floors"]
 
+[tasks.ci-linux]
+description = "Run GitHub Actions' CI jobs (build, lint-project) in a local Linux container. Required before every push to main."
+# `ci` runs on THIS machine (macOS here); GitHub runs Linux, and Linux-only reds (coverage
+# floors that measure differently, real-process and wall-clock tests) are invisible to it.
+# The steps are DERIVED from .github/workflows/ci.yml (scripts/ci-linux/steps.sh says why);
+# the run refuses to start when an upstream reusable workflow it transcribes changed. Needs
+# a Docker daemon. FsHotWatch carries the same scripts (AUTOMATION-1363).
+run = "bash scripts/ci-linux.sh"
+
 [tasks.package-floors]
 description = "Pack every released project and fail if a packed FSharp.Core / FCS floor floats or exceeds its pin"
 # A nuspec floor is what restore resolved at pack time; a floated FSharp.Core shipped

@@ -20,6 +20,7 @@ mise run build          # Build the solution
 mise run test           # Run tests with coverage
 mise run check          # Run all checks with auto-fix
 mise run ci             # Run all CI checks (no auto-fix)
+mise run ci-linux       # Run GitHub Actions' CI jobs in a local Linux container (Docker)
 mise run format         # Format with Fantomas
 mise run lint           # Run FSharpLint
 mise run example        # Run test-prune against example solution
@@ -36,6 +37,22 @@ mise run bench-raw      # Run benchmarks without profiling (JSON metrics)
 mise run release        # Tag a release based on API changes
 mise run release-alpha  # Tag an alpha pre-release
 ```
+
+## Merging to main
+
+Before every push to `main` (a merge, a re-land, a revert) run BOTH `mise run ci` and
+`mise run ci-linux`, and push only when both exit 0. `ci-linux` runs GitHub Actions' jobs
+(`build`, `lint-project`) in a local Linux container with the workflow's SDK band, coverage
+floors, `CI`/`GITHUB_ACTIONS` environment and a non-root user, and leaves logs and coverage in
+`.ci-linux/`. macOS `ci` cannot see Linux-only reds, and in FsHotWatch, which shares this CI,
+all 14 inspected CI reds of 2026-10-05..28 were Linux-only.
+
+- `CI_LINUX_JOBS=build mise run ci-linux` runs one job; `mise run ci-linux -- <checkout>`
+  runs another checkout.
+- It refuses to run (exit 2) when a shared reusable workflow it transcribes changed upstream.
+  Update `scripts/ci-linux/steps.sh` to match (FsHotWatch carries the same file), then the
+  pinned blob ids in `scripts/ci-linux.sh`.
+- After pushing, still watch the commit's GitHub CI run to the end; on red, revert first.
 
 ## Project Structure
 
