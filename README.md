@@ -1,3 +1,10 @@
+> [!IMPORTANT]
+> **This repository is frozen.** TestPrune development continues in
+> [FsHotWatch](https://github.com/michaelglass/FsHotWatch), which imports this repository's
+> full history: the TestPrune projects live there under `src/TestPrune.*` and `tests/`.
+> Open issues and pull requests there. This repository is kept read-only so existing
+> links keep resolving; no further commits or releases will be made from it.
+
 <!-- sync:readme:start -->
 # TestPrune
 
